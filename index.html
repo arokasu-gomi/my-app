@@ -1,4 +1,4 @@
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -640,4 +640,470 @@ html_content = """<!DOCTYPE html>
         subjMath: "수학", subMath: "공식·정리", subjSci: "과학", subSci: "용어·계산",
         wordsSub: "등록된 단어 목록", addBtn: "새 단어 추가",
         quizTitle: "단어 입력 퀴즈", quizSub: "뜻 또는 읽기를 입력하고 채점 버튼을 누르세요",
-        quizLabelEng: "뜻을 입력하세요", quizLabelJp: "독음(히라가나)을 입력하세요", quizPlaceholder: "답변 입력..
+        quizLabelEng: "뜻을 입력하세요", quizLabelJp: "독음(히라가나)을 입력하세요", quizPlaceholder: "답변 입력...",
+        btnCheck: "채점하기", btnNext: "다음 문제로",
+        timerTitle: "학습 타이머", timerSub: "집중 시간과 휴식 시간을 설정하여 효율UP",
+        badgeFocus: "집중 시간", badgeBreak: "휴식 시간",
+        studyLabel: "공부 시간 (분)", breakLabel: "휴식 시간 (분)", btnStart: "시작", btnPause: "일시정지", btnResume: "재개", btnReset: "리셋",
+        chartTitle: "이번 주 공부 시간 (분)",
+        settingsTitle: "설정", settingsSub: "앱 표시 및 언어 설정", setGeneral: "일반", langLabel: "언어 / Language",
+        modalTitle: "단어 추가", modalTerm: "단어 / 한자", modalMeaning: "뜻 / 읽기", modalCancel: "취소", modalSave: "저장",
+        days: ['월', '화', '수', '목', '금', '토', '일'],
+        msgCorrect: "⭕ 정답!", msgIncorrect: "❌ 오답...", alertStudyEnd: "수고하셨습니다! 공부 시간이 종료되었습니다. 휴식을 취하세요!", alertBreakEnd: "휴식이 끝났습니다! 다음 집중 시간을 시작하세요!",
+        nodata: "데이터가 없습니다"
+      },
+      "ko-hanja": {
+        navSubj: "敎科", navWords: "單語帳", navQuiz: "퀴즈", navTimer: "타이머", navSettings: "設定",
+        subjTitle: "敎科 選擇", subjSub: "學習할 科目을 選擇하세요",
+        badgeSelected: "選擇됨", badgeAvailable: "利用 可能", badgeLocked: "準備 中",
+        subEng: "英單語·暗記 테스트", subjJp: "國語 (漢字2級)", subJp: "漢字檢定 2級 讀音 퀴즈",
+        subjMath: "數學", subMath: "公式·定理", subjSci: "科學", subSci: "用語·計算",
+        wordsSub: "登錄된 單語 目錄", addBtn: "새 單語 追加",
+        quizTitle: "單語 輸入 퀴즈", quizSub: "뜻 또는 讀音을 輸入하고 採點 辯證을 누르세요",
+        quizLabelEng: "뜻을 輸入하세요", quizLabelJp: "讀音(히라가나)을 輸入하세요", quizPlaceholder: "回答 輸入...",
+        btnCheck: "採點하기", btnNext: "次重 問題로",
+        timerTitle: "學習 타이머", timerSub: "集中 時間과 休息 時間을 設定하여 效率UP",
+        badgeFocus: "集中 時間", badgeBreak: "休息 時間",
+        studyLabel: "工夫 時間 (分)", breakLabel: "休息 時間 (分)", btnStart: "始作", btnPause: "一時停止", btnResume: "再開", btnReset: "리셋",
+        chartTitle: "今週 工夫 時間 (分)",
+        settingsTitle: "設定", settingsSub: "應用 表示 밎 言語 設定", setGeneral: "一般", langLabel: "言語 / Language",
+        modalTitle: "單語 追加", modalTerm: "單語 / 漢字", modalMeaning: "뜻 / 讀音", modalCancel: "取消", modalSave: "儲藏",
+        days: ['月', '火', '水', '木', '金', '土', '日'],
+        msgCorrect: "⭕ 正答!", msgIncorrect: "❌ 誤答...", alertStudyEnd: "受苦하셨습니다! 工夫 時間이 終了되었습니다. 休息을 取하세요!", alertBreakEnd: "休息이 끝났습니다! 次重 集中 時間을 始作하세요!",
+        nodata: "資料가 無實語"
+      },
+      "zh-hans": {
+        navSubj: "学科", navWords: "单词本", navQuiz: "测验", navTimer: "计时器", navSettings: "设置",
+        subjTitle: "选择学科", subjSub: "请选择要学习的科目",
+        badgeSelected: "已选择", badgeAvailable: "可用", badgeLocked: "准备中",
+        subEng: "英语单词·背诵测试", subjJp: "日语 (汉字2级)", subJp: "汉字检定2级读音测验",
+        subjMath: "数学", subMath: "公式·定理", subjSci: "科学", subSci: "词汇·计算",
+        wordsSub: "已添加的单词列表", addBtn: "添加新单词",
+        quizTitle: "单词拼写测验", quizSub: "请输入释义或读音并点击判定",
+        quizLabelEng: "输入中文释义", quizLabelJp: "输入平假读音", quizPlaceholder: "输入答案...",
+        btnCheck: "判定", btnNext: "下一题",
+        timerTitle: "学习计时器", timerSub: "设定专注与休息时间，提升效率",
+        badgeFocus: "专注时间", badgeBreak: "休息时间",
+        studyLabel: "学习时间 (分)", breakLabel: "休息时间 (分)", btnStart: "开始", btnPause: "暂停", btnResume: "继续", btnReset: "重置",
+        chartTitle: "本周学习时间 (分)",
+        settingsTitle: "设置", settingsSub: "应用显示与语言设置", setGeneral: "常规", langLabel: "语言 / Language",
+        modalTitle: "添加单词", modalTerm: "单词 / 汉字", modalMeaning: "释义 / 读音", modalCancel: "取消", modalSave: "保存",
+        days: ['一', '二', '三', '四', '五', '六', '日'],
+        msgCorrect: "⭕ 正确！", msgIncorrect: "❌ 错误...", alertStudyEnd: "辛苦了！学习时间结束，开始休息吧！", alertBreakEnd: "休息结束！开始下一轮专注学习吧！",
+        nodata: "暂无数据"
+      },
+      "zh-hant": {
+        navSubj: "學科", navWords: "單字本", navQuiz: "測驗", navTimer: "計時器", navSettings: "設定",
+        subjTitle: "選擇學科", subjSub: "請選擇要學習的科目",
+        badgeSelected: "已選擇", badgeAvailable: "可用", badgeLocked: "準備中",
+        subEng: "英語單字·背誦測試", subjJp: "日語 (漢字2級)", subJp: "漢字檢定2級讀音測驗",
+        subjMath: "數學", subMath: "公式·定理", subjSci: "科學", subSci: "詞彙·計算",
+        wordsSub: "已新增的單字列表", addBtn: "新增單字",
+        quizTitle: "單字拼寫測驗", quizSub: "請輸入釋義或讀音並點擊判定",
+        quizLabelEng: "輸入中文釋義", quizLabelJp: "輸入平假讀音", quizPlaceholder: "輸入答案...",
+        btnCheck: "判定", btnNext: "下一題",
+        timerTitle: "學習計時器", timerSub: "設定專注與休息時間，提升效率",
+        badgeFocus: "專注時間", badgeBreak: "休息時間",
+        studyLabel: "學習時間 (分)", breakLabel: "休息時間 (分)", btnStart: "開始", btnPause: "暫停", btnResume: "繼續", btnReset: "重置",
+        chartTitle: "本週學習時間 (分)",
+        settingsTitle: "設定", settingsSub: "應用顯示與語言設定", setGeneral: "常規", langLabel: "語言 / Language",
+        modalTitle: "新增單字", modalTerm: "單字 / 漢字", modalMeaning: "釋義 / 讀音", modalCancel: "取消", modalSave: "儲存",
+        days: ['一', '二', '三', '四', '五', '六', '日'],
+        msgCorrect: "⭕ 正確！", msgIncorrect: "❌ 錯誤...", alertStudyEnd: "辛苦了！學習時間結束，開始休息吧！", alertBreakEnd: "休息結束！開始下一輪專注學習吧！",
+        nodata: "暫無資料"
+      }
+    };
+
+    let currentLang = localStorage.getItem('smart_vocab_lang') || 'ja';
+    let currentSubject = 'english';
+
+    let englishWords = JSON.parse(localStorage.getItem('smart_vocab_english')) || [
+      { id: '1', term: 'Apple', meaning: 'りんご' },
+      { id: '2', term: 'Persistent', meaning: '粘り強い' },
+      { id: '3', term: 'Challenge', meaning: '挑戦' }
+    ];
+
+    let japaneseWords = JSON.parse(localStorage.getItem('smart_vocab_japanese')) || [
+      { id: 'j1', term: '恣意', meaning: 'しい' },
+      { id: 'j2', term: '破天荒', meaning: 'はてんこう' },
+      { id: 'j3', term: '熨斗', meaning: 'のし' },
+      { id: 'j4', term: '躊躇', meaning: 'ちゅうちょ' },
+      { id: 'j5', term: '相殺', meaning: 'そうさい' },
+      { id: 'j6', term: '脆弱', meaning: 'ぜいじゃく' }
+    ];
+
+    let currentQuizIndex = 0;
+    let isQuizAnswered = false;
+
+    // Timer
+    let timerInterval = null;
+    let isTimerRunning = false;
+    let isStudyMode = true;
+    let timeLeft = 25 * 60;
+
+    // Weekly Study Data [Mon-Sun]
+    let weeklyStudyData = JSON.parse(localStorage.getItem('smart_vocab_weekly')) || [30, 45, 25, 50, 20, 60, 15];
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('smart_vocab_lang', lang);
+      document.getElementById('lang-select').value = lang;
+      applyLanguage();
+    }
+
+    function applyLanguage() {
+      const t = i18n[currentLang] || i18n.ja;
+
+      // Nav
+      document.getElementById('t-nav-subj').innerText = t.navSubj;
+      document.getElementById('t-nav-words').innerText = t.navWords;
+      document.getElementById('t-nav-quiz').innerText = t.navQuiz;
+      document.getElementById('t-nav-timer').innerText = t.navTimer;
+      document.getElementById('t-nav-settings').innerText = t.navSettings;
+
+      // Subjects View
+      document.getElementById('t-subjects-title').innerText = t.subjTitle;
+      document.getElementById('t-subjects-sub').innerText = t.subjSub;
+      document.getElementById('t-badge-selected').innerText = t.badgeSelected;
+      document.getElementById('t-badge-available').innerText = t.badgeAvailable;
+      document.getElementById('t-badge-locked1').innerText = t.badgeLocked;
+      document.getElementById('t-badge-locked2').innerText = t.badgeLocked;
+      document.getElementById('t-sub-eng').innerText = t.subEng;
+      document.getElementById('t-subj-jp').innerText = t.subjJp;
+      document.getElementById('t-sub-jp').innerText = t.subJp;
+      document.getElementById('t-subj-math').innerText = t.subjMath;
+      document.getElementById('t-sub-math').innerText = t.subMath;
+      document.getElementById('t-subj-sci').innerText = t.subjSci;
+      document.getElementById('t-sub-sci').innerText = t.subSci;
+
+      // Words View
+      document.getElementById('words-title').innerText = currentSubject === 'english' ? 'English Vocab' : t.subjJp;
+      document.getElementById('t-words-sub').innerText = t.wordsSub;
+      document.getElementById('t-add-btn').innerText = t.addBtn;
+
+      // Quiz View
+      document.getElementById('t-quiz-title').innerText = t.quizTitle;
+      document.getElementById('t-quiz-sub').innerText = t.quizSub;
+      document.getElementById('quiz-answer-input').placeholder = t.quizPlaceholder;
+
+      // Timer View
+      document.getElementById('t-timer-title').innerText = t.timerTitle;
+      document.getElementById('t-timer-sub').innerText = t.timerSub;
+      document.getElementById('timer-status-badge').innerText = isStudyMode ? t.badgeFocus : t.badgeBreak;
+      document.getElementById('t-study-label').innerText = t.studyLabel;
+      document.getElementById('t-break-label').innerText = t.breakLabel;
+      document.getElementById('t-reset-btn').innerText = t.btnReset;
+      document.getElementById('t-chart-title').innerText = t.chartTitle;
+
+      if (!isTimerRunning) {
+        document.getElementById('timer-start-btn').innerText = t.btnStart;
+      } else {
+        document.getElementById('timer-start-btn').innerText = t.btnPause;
+      }
+
+      // Settings View
+      document.getElementById('t-settings-title').innerText = t.settingsTitle;
+      document.getElementById('t-settings-sub').innerText = t.settingsSub;
+      document.getElementById('t-set-general').innerText = t.setGeneral;
+      document.getElementById('t-lang-label').innerText = t.langLabel;
+
+      // Modal
+      document.getElementById('t-modal-title').innerText = t.modalTitle;
+      document.getElementById('t-modal-term').innerText = t.modalTerm;
+      document.getElementById('t-modal-meaning').innerText = t.modalMeaning;
+      document.getElementById('t-modal-cancel').innerText = t.modalCancel;
+      document.getElementById('t-modal-save').innerText = t.modalSave;
+
+      drawNativeChart();
+    }
+
+    // Tab Navigation
+    function switchTab(viewName) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+      
+      const targetView = document.getElementById(`view-${viewName}`);
+      const targetTab = document.getElementById(`tab-${viewName}`);
+      
+      if (targetView) targetView.classList.add('active');
+      if (targetTab) targetTab.classList.add('active');
+
+      if (viewName === 'words') renderWordList();
+      if (viewName === 'quiz') startQuiz();
+      if (viewName === 'timer') drawNativeChart();
+    }
+
+    function selectSubject(subject) {
+      currentSubject = subject;
+      document.querySelectorAll('.subject-card').forEach(el => el.classList.remove('active-subject'));
+      const selectedEl = document.getElementById(`subject-card-${subject}`);
+      if (selectedEl) selectedEl.classList.add('active-subject');
+
+      const t = i18n[currentLang] || i18n.ja;
+      document.getElementById('words-title').innerText = subject === 'english' ? 'English Vocab' : t.subjJp;
+      switchTab('words');
+    }
+
+    function getActiveDataset() {
+      return currentSubject === 'english' ? englishWords : japaneseWords;
+    }
+
+    // Word List
+    function renderWordList() {
+      const container = document.getElementById('word-list-container');
+      const dataset = getActiveDataset();
+      const t = i18n[currentLang] || i18n.ja;
+
+      if (!container) return;
+
+      if (dataset.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:var(--text-sub); margin-top:30px;">${t.nodata}</p>`;
+        return;
+      }
+
+      container.innerHTML = dataset.map(w => `
+        <div class="word-item">
+          <div>
+            <div class="word-main ${currentSubject === 'english' ? 'en-text' : ''}">${escapeHtml(w.term)}</div>
+            <div class="word-sub">${escapeHtml(w.meaning)}</div>
+          </div>
+          <div>
+            ${currentSubject === 'english' ? `<button class="icon-btn" onclick="speakText('${escapeHtml(w.term)}')"><i class="fa-solid fa-volume-high"></i></button>` : ''}
+            <button class="icon-btn" onclick="deleteWord('${w.id}')"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    function speakText(text) {
+      const uttr = new SpeechSynthesisUtterance(text);
+      uttr.lang = 'en-US';
+      window.speechSynthesis.speak(uttr);
+    }
+
+    function openModal() { document.getElementById('add-modal').classList.add('active'); }
+    function closeModal() { document.getElementById('add-modal').classList.remove('active'); }
+
+    function saveWord() {
+      const term = document.getElementById('input-term').value.trim();
+      const meaning = document.getElementById('input-meaning').value.trim();
+      if (!term || !meaning) return;
+
+      const newWord = { id: Date.now().toString(), term, meaning };
+      if (currentSubject === 'english') {
+        englishWords.push(newWord);
+        localStorage.setItem('smart_vocab_english', JSON.stringify(englishWords));
+      } else {
+        japaneseWords.push(newWord);
+        localStorage.setItem('smart_vocab_japanese', JSON.stringify(japaneseWords));
+      }
+
+      document.getElementById('input-term').value = '';
+      document.getElementById('input-meaning').value = '';
+      closeModal();
+      renderWordList();
+    }
+
+    function deleteWord(id) {
+      if (currentSubject === 'english') {
+        englishWords = englishWords.filter(w => w.id !== id);
+        localStorage.setItem('smart_vocab_english', JSON.stringify(englishWords));
+      } else {
+        japaneseWords = japaneseWords.filter(w => w.id !== id);
+        localStorage.setItem('smart_vocab_japanese', JSON.stringify(japaneseWords));
+      }
+      renderWordList();
+    }
+
+    // Quiz Mode
+    function startQuiz() {
+      const dataset = getActiveDataset();
+      const t = i18n[currentLang] || i18n.ja;
+
+      if (dataset.length === 0) {
+        document.getElementById('quiz-question-text').innerText = t.nodata;
+        return;
+      }
+
+      isQuizAnswered = false;
+      const current = dataset[currentQuizIndex % dataset.length];
+      document.getElementById('quiz-mode-label').innerText = currentSubject === 'english' ? t.quizLabelEng : t.quizLabelJp;
+      document.getElementById('quiz-question-text').innerText = current.term;
+      document.getElementById('quiz-answer-input').value = '';
+      document.getElementById('quiz-answer-input').disabled = false;
+      document.getElementById('quiz-feedback').innerText = '';
+      document.getElementById('quiz-feedback').className = 'quiz-feedback';
+      document.getElementById('quiz-submit-btn').innerText = t.btnCheck;
+    }
+
+    function checkQuizAnswer() {
+      const dataset = getActiveDataset();
+      const t = i18n[currentLang] || i18n.ja;
+      if (dataset.length === 0) return;
+
+      if (isQuizAnswered) {
+        currentQuizIndex = (currentQuizIndex + 1) % dataset.length;
+        startQuiz();
+        return;
+      }
+
+      const inputVal = document.getElementById('quiz-answer-input').value.trim().toLowerCase();
+      const current = dataset[currentQuizIndex % dataset.length];
+      const correctVal = current.meaning.trim().toLowerCase();
+      const feedbackEl = document.getElementById('quiz-feedback');
+
+      if (inputVal && (inputVal === correctVal || correctVal.includes(inputVal))) {
+        feedbackEl.innerText = `${t.msgCorrect} (${current.meaning})`;
+        feedbackEl.className = 'quiz-feedback correct';
+      } else {
+        feedbackEl.innerText = `${t.msgIncorrect} (${current.meaning})`;
+        feedbackEl.className = 'quiz-feedback incorrect';
+      }
+
+      isQuizAnswered = true;
+      document.getElementById('quiz-answer-input').disabled = true;
+      document.getElementById('quiz-submit-btn').innerText = t.btnNext;
+    }
+
+    // Timer Logic
+    function updateTimerDisplay() {
+      const min = Math.floor(timeLeft / 60);
+      const sec = timeLeft % 60;
+      document.getElementById('timer-display').innerText = 
+        `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('timer-start-btn');
+      const t = i18n[currentLang] || i18n.ja;
+
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        btn.innerText = t.btnResume;
+      } else {
+        isTimerRunning = true;
+        btn.innerText = t.btnPause;
+        timerInterval = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            btn.innerText = t.btnStart;
+            
+            if (isStudyMode) {
+              alert(t.alertStudyEnd);
+              const todayIdx = (new Date().getDay() + 6) % 7; // Mon=0, Sun=6
+              const studyMins = parseInt(document.getElementById('study-min-input').value) || 25;
+              weeklyStudyData[todayIdx] += studyMins;
+              localStorage.setItem('smart_vocab_weekly', JSON.stringify(weeklyStudyData));
+              drawNativeChart();
+
+              isStudyMode = false;
+              document.getElementById('timer-status-badge').innerText = t.badgeBreak;
+              document.getElementById('timer-status-badge').classList.add('break');
+              timeLeft = (parseInt(document.getElementById('break-min-input').value) || 5) * 60;
+            } else {
+              alert(t.alertBreakEnd);
+              isStudyMode = true;
+              document.getElementById('timer-status-badge').innerText = t.badgeFocus;
+              document.getElementById('timer-status-badge').classList.remove('break');
+              timeLeft = (parseInt(document.getElementById('study-min-input').value) || 25) * 60;
+            }
+            updateTimerDisplay();
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      isStudyMode = true;
+      const t = i18n[currentLang] || i18n.ja;
+      document.getElementById('timer-start-btn').innerText = t.btnStart;
+      document.getElementById('timer-status-badge').innerText = t.badgeFocus;
+      document.getElementById('timer-status-badge').classList.remove('break');
+      
+      const studyMins = parseInt(document.getElementById('study-min-input').value) || 25;
+      timeLeft = studyMins * 60;
+      updateTimerDisplay();
+    }
+
+    // Native HTML5 Canvas Chart Rendering
+    function drawNativeChart() {
+      const canvas = document.getElementById('weeklyChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const t = i18n[currentLang] || i18n.ja;
+      
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0) return;
+
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = rect.height;
+      ctx.clearRect(0, 0, width, height);
+
+      const labels = t.days;
+      const maxVal = Math.max(...weeklyStudyData, 60);
+      const paddingBottom = 24;
+      const paddingTop = 20;
+      const chartHeight = height - paddingBottom - paddingTop;
+      const barWidth = Math.min(28, width / 10);
+      const step = width / labels.length;
+
+      labels.forEach((label, i) => {
+        const x = i * step + step / 2;
+        const val = weeklyStudyData[i];
+        const barH = (val / maxVal) * chartHeight;
+        const y = height - paddingBottom - barH;
+
+        // Draw Bar
+        ctx.fillStyle = '#007AFF';
+        ctx.beginPath();
+        if (barH > 0) {
+          ctx.roundRect(x - barWidth / 2, y, barWidth, barH, [6, 6, 0, 0]);
+        }
+        ctx.fill();
+
+        // Day Label
+        ctx.fillStyle = '#8E8E93';
+        ctx.font = '500 12px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, x, height - 6);
+
+        // Value Label
+        if (val > 0) {
+          ctx.fillStyle = '#1C1C1E';
+          ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
+          ctx.fillText(`${val}`, x, y - 4);
+        }
+      });
+    }
+
+    window.addEventListener('resize', drawNativeChart);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('lang-select').value = currentLang;
+      applyLanguage();
+      resetTimer();
+      renderWordList();
+
+      document.getElementById('quiz-answer-input')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkQuizAnswer();
+      });
+    });
+  </script>
+</body>
+</html>
