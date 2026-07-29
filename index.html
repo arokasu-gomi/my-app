@@ -2,141 +2,380 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Vocab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Smart Vocab & Study Timer</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
   <style>
     :root {
-      --bg-color: #f8f9fa;
-      --card-bg: #ffffff;
-      --text: #1c1c1e;
-      --sub-text: #8e8e93;
-      --accent: #007aff;
-      --border: #c6c6c8;
-      --tab-bg: rgba(255, 255, 255, 0.85);
+      --primary-color: #007AFF;
+      --primary-gradient: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+      --break-gradient: linear-gradient(135deg, #34C759 0%, #30B0C7 100%);
+      --success-color: #34C759;
+      --error-color: #FF3B30;
+      --bg-color: #F2F2F7;
+      --card-bg: #FFFFFF;
+      --text-main: #1C1C1E;
+      --text-sub: #8E8E93;
+      --border-color: rgba(60, 60, 67, 0.12);
+      --tab-bar-bg: rgba(255, 255, 255, 0.85);
+      
+      --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 
+                     'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', 
+                     'Hiragino Sans', 'メイリオ', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Arial, sans-serif;
+      font-family: var(--font-family);
       background-color: var(--bg-color);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-      padding-bottom: 90px; /* ボトムバー分の余白 */
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 95px;
+      overflow-x: hidden;
+    }
+
+    .en-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
     }
 
     header {
-      padding: 16px 20px 8px 20px;
-      font-size: 1.2rem;
-      font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(242, 242, 247, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 0.5px solid var(--border-color);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 700;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .container {
-      padding: 16px 20px;
+    main {
       max-width: 600px;
       margin: 0 auto;
+      padding: 20px;
     }
 
-    .page {
+    .view-section {
       display: none;
     }
 
-    .page.active {
+    .view-section.active {
       display: block;
+      animation: fadeIn 0.2s ease-out;
     }
 
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 4px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .subtitle {
-      color: var(--sub-text);
-      font-size: 0.9rem;
-      margin-bottom: 20px;
+    .section-header {
+      margin-bottom: 16px;
     }
 
-    /* 設定リストカード (Apple風) */
-    .settings-group {
+    .section-title {
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    /* 教科選択 GRID */
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 15px;
+    }
+
+    .subject-card {
       background: var(--card-bg);
-      border-radius: 12px;
-      padding: 4px 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 20px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 130px;
+      position: relative;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
     }
 
-    .setting-item {
+    .subject-card.active-subject {
+      background: var(--primary-gradient);
+      color: #FFFFFF;
+      border: none;
+      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.25);
+    }
+
+    .subject-card.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #EFEFF4;
+    }
+
+    .subject-icon { font-size: 28px; }
+
+    .subject-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .badge-available { background: rgba(52, 199, 89, 0.2); color: #248A3D; }
+    .active-subject .badge-available { background: rgba(255, 255, 255, 0.25); color: #FFF; }
+    .badge-locked { background: rgba(142, 142, 147, 0.2); color: var(--text-sub); }
+
+    .add-btn {
+      width: 100%;
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.2);
+    }
+
+    .word-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .word-item {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #efeff4;
+      border: 1px solid var(--border-color);
     }
 
-    .setting-item:last-child {
-      border-bottom: none;
-    }
+    .word-main { font-size: 18px; font-weight: 700; }
+    .word-sub { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
 
-    .setting-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.95rem;
-    }
-
-    select {
-      background: #efeff4;
+    .icon-btn {
+      background: none;
       border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      color: var(--text);
-      outline: none;
-    }
-
-    /* 汎用カード・フォーム */
-    .card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #d1d1d6;
-      border-radius: 8px;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    button.primary-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-weight: bold;
-      width: 100%;
+      color: var(--text-sub);
+      font-size: 16px;
+      padding: 8px;
       cursor: pointer;
     }
 
-    /* ボトムタブバー (Appleスタイル すりガラス) */
-    nav.tab-bar {
+    /* Cards */
+    .custom-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+      margin-top: 10px;
+    }
+
+    .quiz-question {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 20px 0 10px 0;
+    }
+
+    .quiz-input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-color);
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      font-family: var(--font-family);
+      background: #F8F8FA;
+      margin-bottom: 12px;
+    }
+
+    .quiz-feedback {
+      font-size: 15px;
+      font-weight: 700;
+      min-height: 24px;
+      margin-top: 8px;
+    }
+
+    .quiz-feedback.correct { color: var(--success-color); }
+    .quiz-feedback.incorrect { color: var(--error-color); }
+
+    .control-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-next { background: var(--primary-gradient); color: white; }
+    .btn-secondary { background: #E5E5EA; color: var(--text-main); }
+
+    /* Timer */
+    .timer-display {
+      font-size: 54px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin: 15px 0;
+      font-family: 'Plus Jakarta Sans', monospace;
+    }
+
+    .timer-status-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+      color: white;
+      background: var(--primary-gradient);
+    }
+
+    .timer-status-badge.break {
+      background: var(--break-gradient);
+    }
+
+    .time-setter {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #F8F8FA;
+      padding: 12px;
+      border-radius: 16px;
+    }
+
+    .setter-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .setter-group label {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .setter-group input {
+      width: 70px;
+      padding: 8px;
+      text-align: center;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .timer-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Settings UI */
+    .settings-group-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      margin: 16px 0 8px 8px;
+    }
+
+    .settings-list {
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .settings-item {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 0.5px solid var(--border-color);
+    }
+
+    .settings-item:last-child {
+      border-bottom: none;
+    }
+
+    .settings-label {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .settings-select {
+      background: #F8F8FA;
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      outline: none;
+      font-family: var(--font-family);
+      cursor: pointer;
+    }
+
+    /* Apple-style Bottom Tab Bar */
+    .apple-tab-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      background: var(--tab-bg);
+      bottom: 0; left: 0; right: 0;
+      height: 75px;
+      padding-bottom: 15px;
+      background: var(--tab-bar-bg);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-top: 0.5px solid rgba(0, 0, 0, 0.15);
+      border-top: 0.5px solid var(--border-color);
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -144,228 +383,262 @@
     }
 
     .tab-item {
-      background: none;
-      border: none;
       display: flex;
       flex-direction: column;
       align-items: center;
-      color: var(--sub-text);
-      font-size: 0.7rem;
+      color: var(--text-sub);
+      font-size: 10px;
+      font-weight: 500;
+      gap: 3px;
       cursor: pointer;
       flex: 1;
-      gap: 4px;
     }
 
-    .tab-item.active {
-      color: var(--accent);
-    }
+    .tab-item i { font-size: 20px; }
+    .tab-item.active { color: var(--primary-color); font-weight: 600; }
 
-    .tab-item svg {
-      width: 22px;
-      height: 22px;
-      fill: currentColor;
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 2000;
     }
-
-    .list-item {
+    .modal-overlay.active { display: flex; }
+    .modal-content {
       background: var(--card-bg);
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid #efeff4;
+      width: 100%; max-width: 600px;
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 4px; font-weight: 600; }
+    .form-group input {
+      width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);
+      font-size: 15px; outline: none; background: #F8F8FA;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 180px !important;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <span>🎓</span>
-    <span id="app-title">Smart Vocab</span>
+    <div class="app-title">
+      <i class="fa-solid fa-graduation-cap"></i>
+      <span class="en-text">Smart Vocab</span>
+    </div>
   </header>
 
-  <div class="container">
-    <!-- 教科タブ -->
-    <div id="page-教科" class="page">
-      <h2>教科</h2>
-      <div class="subtitle">学習する教科を選択・管理</div>
-      <div class="card">
-        <input type="text" id="subject-input" placeholder="新しい教科名 (例: 英語)">
-        <button class="primary-btn" onclick="addSubject()">教科を追加</button>
+  <main>
+    <!-- 1. 教科選択 -->
+    <section id="view-subjects" class="view-section active">
+      <div class="section-header">
+        <h1 class="section-title" id="t-subjects-title">教科を選択</h1>
+        <p class="section-subtitle" id="t-subjects-sub">学習する教科を選んでください</p>
       </div>
-      <div id="subject-list"></div>
-    </div>
-
-    <!-- 単語帳タブ -->
-    <div id="page-単語帳" class="page active">
-      <h2>単語帳</h2>
-      <div class="subtitle">単語と意味の登録・確認</div>
-      <div class="card">
-        <input type="text" id="word-input" placeholder="単語 (例: Apple)">
-        <input type="text" id="meaning-input" placeholder="意味 (例: りんご)">
-        <button class="primary-btn" onclick="addWord()">単語を追加</button>
-      </div>
-      <div id="word-list"></div>
-    </div>
-
-    <!-- クイズタブ -->
-    <div id="page-クイズ" class="page">
-      <h2>クイズ</h2>
-      <div class="subtitle">暗記のテスト</div>
-      <div class="card" style="text-align: center; padding: 30px;">
-        <p id="quiz-question" style="font-size: 1.2rem; font-weight: bold;">「Apple」の意味は？</p>
-        <input type="text" id="quiz-answer" placeholder="答えを入力">
-        <button class="primary-btn" onclick="checkQuiz()">回答する</button>
-      </div>
-    </div>
-
-    <!-- タイマータブ -->
-    <div id="page-タイマー" class="page">
-      <h2>タイマー</h2>
-      <div class="subtitle">ポモドーロ・学習タイマー</div>
-      <div class="card" style="text-align: center; padding: 30px;">
-        <h1 id="timer-display" style="font-size: 3rem; margin: 10px 0;">25:00</h1>
-        <button class="primary-btn" onclick="startTimer()">スタート</button>
-      </div>
-    </div>
-
-    <!-- 設定タブ -->
-    <div id="page-設定" class="page">
-      <h2>設定</h2>
-      <div class="subtitle">アプリの表示と言語設定</div>
-      <div class="settings-group">
-        <div class="setting-item">
-          <div class="setting-label">
-            <span>🌐</span>
-            <span>言語 / Language</span>
+      <div class="subject-grid">
+        <div class="subject-card active-subject" id="subject-card-english" onclick="selectSubject('english')">
+          <span class="subject-badge badge-available" id="t-badge-selected">選択中</span>
+          <div class="subject-icon"><i class="fa-solid fa-language"></i></div>
+          <div>
+            <h3 class="en-text">English</h3>
+            <p style="font-size: 11px; opacity: 0.8;" id="t-sub-eng">英単語・暗記テスト</p>
           </div>
-          <select id="lang-select" onchange="changeLanguage(this.value)">
+        </div>
+
+        <div class="subject-card" id="subject-card-japanese" onclick="selectSubject('japanese')">
+          <span class="subject-badge badge-available" id="t-badge-available">利用可能</span>
+          <div class="subject-icon"><i class="fa-solid fa-book-open"></i></div>
+          <div>
+            <h3 id="t-subj-jp">国語 (漢字2級)</h3>
+            <p style="font-size: 11px; color: var(--text-sub);" id="t-sub-jp">漢検2級レベル読みクイズ</p>
+          </div>
+        </div>
+
+        <div class="subject-card disabled">
+          <span class="subject-badge badge-locked" id="t-badge-locked1">準備中</span>
+          <div class="subject-icon"><i class="fa-solid fa-calculator"></i></div>
+          <div><h3 id="t-subj-math">数学</h3><p style="font-size: 11px; color: var(--text-sub);" id="t-sub-math">公式・定理</p></div>
+        </div>
+
+        <div class="subject-card disabled">
+          <span class="subject-badge badge-locked" id="t-badge-locked2">準備中</span>
+          <div class="subject-icon"><i class="fa-solid fa-flask"></i></div>
+          <div><h3 id="t-subj-sci">理科</h3><p style="font-size: 11px; color: var(--text-sub);" id="t-sub-sci">用語・計算</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 単語帳一覧 -->
+    <section id="view-words" class="view-section">
+      <div class="section-header">
+        <h1 class="section-title" id="words-title">English Vocab</h1>
+        <p class="section-subtitle" id="t-words-sub">登録されている単語一覧</p>
+      </div>
+      <button class="add-btn" onclick="openModal()"><i class="fa-solid fa-plus"></i> <span id="t-add-btn">新しい単語を追加</span></button>
+      <div class="word-list" id="word-list-container"></div>
+    </section>
+
+    <!-- 3. クイズモード -->
+    <section id="view-quiz" class="view-section">
+      <div class="section-header">
+        <h1 class="section-title" id="t-quiz-title">単語入力クイズ</h1>
+        <p class="section-subtitle" id="t-quiz-sub">意味または読みを入力して判定ボタンを押してください</p>
+      </div>
+      
+      <div class="custom-card">
+        <div style="font-size: 12px; color: var(--text-sub); font-weight: 600;" id="quiz-mode-label">問題</div>
+        <div class="quiz-question" id="quiz-question-text">Apple</div>
+        
+        <input type="text" id="quiz-answer-input" class="quiz-input" placeholder="回答を入力..." autocomplete="off">
+        <button class="control-btn btn-next" id="quiz-submit-btn" onclick="checkQuizAnswer()">判定する</button>
+
+        <div class="quiz-feedback" id="quiz-feedback"></div>
+      </div>
+    </section>
+
+    <!-- 4. 学習時間 & ポモドーロタイマー -->
+    <section id="view-timer" class="view-section">
+      <div class="section-header">
+        <h1 class="section-title" id="t-timer-title">学習タイマー</h1>
+        <p class="section-subtitle" id="t-timer-sub">集中時間と休憩時間をセットして効率UP</p>
+      </div>
+
+      <div class="custom-card">
+        <div class="timer-status-badge" id="timer-status-badge">集中タイム</div>
+        <div class="timer-display" id="timer-display">25:00</div>
+
+        <div class="time-setter">
+          <div class="setter-group">
+            <label id="t-study-label">勉強時間 (分)</label>
+            <input type="number" id="study-min-input" value="25" min="1" max="120" onchange="resetTimer()">
+          </div>
+          <div class="setter-group">
+            <label id="t-break-label">休憩時間 (分)</label>
+            <input type="number" id="break-min-input" value="5" min="1" max="60" onchange="resetTimer()">
+          </div>
+        </div>
+
+        <div class="timer-btn-group">
+          <button class="control-btn btn-next" id="timer-start-btn" onclick="toggleTimer()">スタート</button>
+          <button class="control-btn btn-secondary" id="t-reset-btn" onclick="resetTimer()">リセット</button>
+        </div>
+      </div>
+
+      <!-- 週間グラフ -->
+      <div class="custom-card" style="margin-top: 20px;">
+        <h3 style="font-size: 16px; text-align: left; margin-bottom: 12px;" id="t-chart-title">今週の勉強時間 (分)</h3>
+        <canvas id="weeklyChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 5. 設定 -->
+    <section id="view-settings" class="view-section">
+      <div class="section-header">
+        <h1 class="section-title" id="t-settings-title">設定</h1>
+        <p class="section-subtitle" id="t-settings-sub">アプリの表示と言語設定</p>
+      </div>
+
+      <div class="settings-group-title" id="t-set-general">一般</div>
+      <div class="settings-list">
+        <div class="settings-item">
+          <div class="settings-label">
+            <i class="fa-solid fa-globe" style="color: var(--primary-color);"></i>
+            <span id="t-lang-label">言語 / Language</span>
+          </div>
+          <select id="lang-select" class="settings-select" onchange="changeLanguage(this.value)">
             <option value="ja">日本語</option>
             <option value="ko">한국어</option>
-            <option value="zh-CN">简体中文</option>
-            <option value="zh-TW">繁體中文</option>
-            <option value="en">English</option>
+            <option value="ko-hanja">國漢文混用 (韓國語)</option>
+            <option value="zh-hans">简体中文</option>
+            <option value="zh-hant">繁體中文</option>
           </select>
         </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 追加モーダル -->
+  <div class="modal-overlay" id="add-modal">
+    <div class="modal-content">
+      <h3 style="margin-bottom: 14px;" id="t-modal-title">単語の追加</h3>
+      <div class="form-group">
+        <label id="t-modal-term">単語 / 漢字</label>
+        <input type="text" id="input-term">
+      </div>
+      <div class="form-group">
+        <label id="t-modal-meaning">意味 / 読み（ひらがな）</label>
+        <input type="text" id="input-meaning">
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 16px;">
+        <button class="control-btn btn-secondary" id="t-modal-cancel" onclick="closeModal()">キャンセル</button>
+        <button class="control-btn btn-next" id="t-modal-save" onclick="saveWord()">保存</button>
       </div>
     </div>
   </div>
 
-  <!-- ボトムタブバー (Appleスタイル) -->
-  <nav class="tab-bar">
-    <button class="tab-item" onclick="switchTab('教科', this)">
-      <svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6L23 9l-11-6zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
-      教科
-    </button>
-    <button class="tab-item active" onclick="switchTab('単語帳', this)">
-      <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0-2-.9-2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
-      単語帳
-    </button>
-    <button class="tab-item" onclick="switchTab('クイズ', this)">
-      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-      クイズ
-    </button>
-    <button class="tab-item" onclick="switchTab('タイマー', this)">
-      <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-      タイマー
-    </button>
-    <button class="tab-item" onclick="switchTab('設定', this)">
-      <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-      設定
-    </button>
+  <!-- Apple風 ボトムナビ -->
+  <nav class="apple-tab-bar">
+    <div class="tab-item active" id="tab-subjects" onclick="switchTab('subjects')">
+      <i class="fa-solid fa-shapes"></i>
+      <span id="t-nav-subj">教科</span>
+    </div>
+    <div class="tab-item" id="tab-words" onclick="switchTab('words')">
+      <i class="fa-solid fa-list-ul"></i>
+      <span id="t-nav-words">単語帳</span>
+    </div>
+    <div class="tab-item" id="tab-quiz" onclick="switchTab('quiz')">
+      <i class="fa-solid fa-pen-to-square"></i>
+      <span id="t-nav-quiz">クイズ</span>
+    </div>
+    <div class="tab-item" id="tab-timer" onclick="switchTab('timer')">
+      <i class="fa-solid fa-clock"></i>
+      <span id="t-nav-timer">タイマー</span>
+    </div>
+    <div class="tab-item" id="tab-settings" onclick="switchTab('settings')">
+      <i class="fa-solid fa-gear"></i>
+      <span id="t-nav-settings">設定</span>
+    </div>
   </nav>
 
   <script>
-    // ローカルストレージを使ったデータ管理
-    let words = JSON.parse(localStorage.getItem('smart_vocab_words')) || [
-      { word: 'Apple', meaning: 'りんご' },
-      { word: 'Book', meaning: '本' }
-    ];
-    let subjects = JSON.parse(localStorage.getItem('smart_vocab_subjects')) || ['英語', '数学'];
-
-    function switchTab(tabName, element) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById('page-' + tabName).classList.add('active');
-
-      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-      element.classList.add('active');
-    }
-
-    function renderWords() {
-      const list = document.getElementById('word-list');
-      list.innerHTML = '';
-      words.forEach((item, index) => {
-        list.innerHTML += `
-          <div class="list-item">
-            <div><strong>${item.word}</strong>: ${item.meaning}</div>
-            <button onclick="deleteWord(${index})" style="background:#ff3b30; color:white; border:none; padding:4px 8px; border-radius:4px;">削除</button>
-          </div>
-        `;
-      });
-      localStorage.setItem('smart_vocab_words', JSON.stringify(words));
-    }
-
-    function addWord() {
-      const w = document.getElementById('word-input').value.trim();
-      const m = document.getElementById('meaning-input').value.trim();
-      if(w && m) {
-        words.push({ word: w, meaning: m });
-        document.getElementById('word-input').value = '';
-        document.getElementById('meaning-input').value = '';
-        renderWords();
-      }
-    }
-
-    function deleteWord(index) {
-      words.splice(index, 1);
-      renderWords();
-    }
-
-    function renderSubjects() {
-      const list = document.getElementById('subject-list');
-      list.innerHTML = '';
-      subjects.forEach((subj, index) => {
-        list.innerHTML += `
-          <div class="list-item">
-            <span>${subj}</span>
-            <button onclick="deleteSubject(${index})" style="background:#ff3b30; color:white; border:none; padding:4px 8px; border-radius:4px;">削除</button>
-          </div>
-        `;
-      });
-      localStorage.setItem('smart_vocab_subjects', JSON.stringify(subjects));
-    }
-
-    function addSubject() {
-      const s = document.getElementById('subject-input').value.trim();
-      if(s) {
-        subjects.push(s);
-        document.getElementById('subject-input').value = '';
-        renderSubjects();
-      }
-    }
-
-    function deleteSubject(index) {
-      subjects.splice(index, 1);
-      renderSubjects();
-    }
-
-    function changeLanguage(lang) {
-      localStorage.setItem('smart_vocab_lang', lang);
-      // 必要に応じた簡易テキスト切り替え
-      const titles = { ja: 'Smart Vocab', ko: '스마트 단어장', 'zh-CN': '智能单词本', 'zh-TW': '智能單字本', en: 'Smart Vocab' };
-      document.getElementById('app-title').textContent = titles[lang] || 'Smart Vocab';
-    }
-
-    // 初期描画
-    renderWords();
-    renderSubjects();
-    const savedLang = localStorage.getItem('smart_vocab_lang');
-    if(savedLang) {
-      document.getElementById('lang-select').value = savedLang;
-      changeLanguage(savedLang);
-    }
-  </script>
-</body>
-</html>
-
+    // i18n Dictionary
+    const i18n = {
+      ja: {
+        navSubj: "教科", navWords: "単語帳", navQuiz: "クイズ", navTimer: "タイマー", navSettings: "設定",
+        subjTitle: "教科を選択", subjSub: "学習する教科を選んでください",
+        badgeSelected: "選択中", badgeAvailable: "利用可能", badgeLocked: "準備中",
+        subEng: "英単語・暗記テスト", subjJp: "国語 (漢字2級)", subJp: "漢検2級レベル読みクイズ",
+        subjMath: "数学", subMath: "公式・定理", subjSci: "理科", subSci: "用語・計算",
+        wordsSub: "登録されている単語一覧", addBtn: "新しい単語を追加",
+        quizTitle: "単語入力クイズ", quizSub: "意味または読みを入力して判定ボタンを押してください",
+        quizLabelEng: "意味を日本語で入力", quizLabelJp: "読み（ひらがな）を入力", quizPlaceholder: "回答を入力...",
+        btnCheck: "判定する", btnNext: "次の問題へ",
+        timerTitle: "学習タイマー", timerSub: "集中時間と休憩時間をセットして効率UP",
+        badgeFocus: "集中タイム", badgeBreak: "休憩タイム",
+        studyLabel: "勉強時間 (分)", breakLabel: "休憩時間 (分)", btnStart: "スタート", btnPause: "一時停止", btnResume: "再開", btnReset: "リセット",
+        chartTitle: "今週の勉強時間 (分)",
+        settingsTitle: "設定", settingsSub: "アプリの表示と言語設定", setGeneral: "一般", langLabel: "言語 / Language",
+        modalTitle: "単語の追加", modalTerm: "単語 / 漢字", modalMeaning: "意味 / 読み（ひらがな）", modalCancel: "キャンセル", modalSave: "保存",
+        days: ['月', '火', '水', '木', '金', '土', '日'],
+        msgCorrect: "⭕ 正解！", msgIncorrect: "❌ 不正解...", alertStudyEnd: "お疲れ様です！勉強時間が終了しました。休憩に入りましょう！", alertBreakEnd: "休憩終了です！次の集中タイムを始めましょう！",
+        nodata: "データがありません"
+      },
+      ko: {
+        navSubj: "교과", navWords: "단어장", navQuiz: "퀴즈", navTimer: "타이머", navSettings: "설정",
+        subjTitle: "교과 선택", subjSub: "학습할 과목을 선택하세요",
+        badgeSelected: "선택됨", badgeAvailable: "이용 가능", badgeLocked: "준비 중",
+        subEng: "영단어·암기 테스트", subjJp: "국어 (한자2급)", subJp: "한자검정 2급 읽기 퀴즈",
+        subjMath: "수학", subMath: "공식·정리", subjSci: "과학", subSci: "용어·계산",
+        wordsSub: "등록된 단어 목록", addBtn: "새 단어 추가",
+        quizTitle: "단어 입력 퀴즈", quizSub: "뜻 또는 읽기를 입력하고 채점 버튼을 누르세요",
+        quizLabelEng: "뜻을 입력하세요", quizLabelJp: "독음(히라가나)을 입력하세요", quizPlaceholder: "답변 입력...",
+        btnChe
