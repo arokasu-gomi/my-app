@@ -3,36 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Smart Vocab & Timer</title>
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-  <!-- Chart.js (グラフ描写用) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <title>Smart Vocab & Study Timer</title>
   <style>
     :root {
-      --primary-color: #007AFF;
-      --primary-gradient: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
-      --break-gradient: linear-gradient(135deg, #34C759 0%, #30B0C7 100%);
-      --success-color: #34C759;
-      --error-color: #FF3B30;
-      --bg-color: #F2F2F7;
+      --primary: #007AFF;
+      --primary-dark: #0056b3;
+      --break-color: #34C759;
+      --bg: #F2F2F7;
       --card-bg: #FFFFFF;
-      --text-main: #1C1C1E;
+      --text: #1C1C1E;
       --text-sub: #8E8E93;
-      --border-color: rgba(60, 60, 67, 0.12);
-      --tab-bar-bg: rgba(255, 255, 255, 0.85);
-      
-      --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 
-                     'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', 
-                     'Hiragino Sans', 'メイリオ', sans-serif;
+      --border: rgba(60, 60, 67, 0.12);
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     * {
@@ -43,48 +25,35 @@
     }
 
     body {
-      font-family: var(--font-family);
-      background-color: var(--bg-color);
-      color: var(--text-main);
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      padding-bottom: 95px;
-      overflow-x: hidden;
-    }
-
-    .en-text {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 600;
+      padding-bottom: 90px;
     }
 
     header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(242, 242, 247, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 0.5px solid var(--border-color);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: rgba(242, 242, 247, 0.9);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      text-align: center;
     }
 
     .app-title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      color: var(--primary);
     }
 
     main {
-      max-width: 600px;
+      max-width: 500px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 16px;
     }
 
     .view-section {
@@ -93,571 +62,576 @@
 
     .view-section.active {
       display: block;
-      animation: fadeIn 0.2s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .section-header {
-      margin-bottom: 16px;
     }
 
     .section-title {
-      font-size: 26px;
+      font-size: 22px;
       font-weight: 700;
-    }
-
-    .section-subtitle {
-      font-size: 13px;
-      color: var(--text-sub);
-      margin-top: 4px;
-    }
-
-    /* 教科選択 */
-    .subject-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-top: 15px;
-    }
-
-    .subject-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 130px;
-      position: relative;
-      border: 1px solid var(--border-color);
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    }
-
-    .subject-card.active-subject {
-      background: var(--primary-gradient);
-      color: #FFFFFF;
-      border: none;
-      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.25);
-    }
-
-    .subject-card.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      background: #EFEFF4;
-    }
-
-    .subject-icon { font-size: 28px; }
-
-    .subject-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      font-size: 10px;
-      padding: 3px 7px;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    .badge-available { background: rgba(52, 199, 89, 0.2); color: #248A3D; }
-    .active-subject .badge-available { background: rgba(255, 255, 255, 0.25); color: #FFF; }
-    .badge-locked { background: rgba(142, 142, 147, 0.2); color: var(--text-sub); }
-
-    .add-btn {
-      width: 100%;
-      background: var(--primary-gradient);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 16px;
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.2);
-    }
-
-    .word-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .word-item {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid var(--border-color);
-    }
-
-    .word-main { font-size: 18px; font-weight: 700; }
-    .word-sub { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
-
-    .icon-btn {
-      background: none;
-      border: none;
-      color: var(--text-sub);
-      font-size: 16px;
-      padding: 8px;
-      cursor: pointer;
-    }
-
-    /* クイズ & タイマーカード */
-    .custom-card {
-      background: var(--card-bg);
-      border-radius: 24px;
-      border: 1px solid var(--border-color);
-      padding: 24px;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-      margin-top: 10px;
-    }
-
-    .quiz-question {
-      font-size: 32px;
-      font-weight: 700;
-      margin: 20px 0 10px 0;
-    }
-
-    .quiz-input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: 1.5px solid var(--border-color);
-      font-size: 16px;
-      text-align: center;
-      outline: none;
-      font-family: var(--font-family);
-      background: #F8F8FA;
-      margin-bottom: 12px;
-    }
-
-    .quiz-feedback {
-      font-size: 15px;
-      font-weight: 700;
-      min-height: 24px;
-      margin-top: 8px;
-    }
-
-    .quiz-feedback.correct { color: var(--success-color); }
-    .quiz-feedback.incorrect { color: var(--error-color); }
-
-    .control-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 16px;
-      border: none;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    .btn-next { background: var(--primary-gradient); color: white; }
-
-    /* タイマー専用スタイル */
-    .timer-display {
-      font-size: 54px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      margin: 15px 0;
-      font-family: 'Plus Jakarta Sans', monospace;
-    }
-
-    .timer-status-badge {
-      display: inline-block;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 14px;
-      color: white;
-      background: var(--primary-gradient);
-    }
-
-    .timer-status-badge.break {
-      background: var(--break-gradient);
-    }
-
-    .time-setter {
-      display: flex;
-      justify-content: space-around;
-      gap: 10px;
-      margin-bottom: 20px;
-      background: #F8F8FA;
-      padding: 12px;
-      border-radius: 16px;
-    }
-
-    .setter-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .setter-group label {
-      font-size: 11px;
-      color: var(--text-sub);
-      font-weight: 600;
       margin-bottom: 4px;
     }
 
-    .setter-group input {
-      width: 70px;
-      padding: 8px;
+    .section-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 16px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    /* Timer */
+    .timer-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      background: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .timer-badge.break {
+      background: var(--break-color);
+    }
+
+    .timer-display {
+      font-size: 56px;
+      font-weight: 800;
+      font-family: monospace;
       text-align: center;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
+      margin: 10px 0 20px 0;
+      letter-spacing: -1px;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-around;
+      background: #F8F8FA;
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .setting-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .setting-group label {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .setting-group input {
+      width: 70px;
+      padding: 6px;
+      text-align: center;
+      border-radius: 8px;
+      border: 1px solid var(--border);
       font-size: 16px;
       font-weight: 700;
     }
 
-    .timer-btn-group {
+    .btn-group {
       display: flex;
       gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
     }
 
     .btn-secondary {
       background: #E5E5EA;
-      color: var(--text-main);
+      color: var(--text);
     }
 
-    /* ボトムナビ */
-    .apple-tab-bar {
+    /* Word List & Subject Select */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .subject-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .subject-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .word-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .word-term {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .word-meaning {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .input-box {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 15px;
+      margin-bottom: 10px;
+      outline: none;
+    }
+
+    /* Chart Canvas */
+    canvas {
+      width: 100% !important;
+      height: 180px !important;
+    }
+
+    /* Bottom Nav */
+    nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      height: 75px;
-      padding-bottom: 15px;
-      background: var(--tab-bar-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 0.5px solid var(--border-color);
+      height: 70px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      z-index: 1000;
     }
 
-    .tab-item {
+    .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 4px;
       color: var(--text-sub);
-      font-size: 10px;
-      font-weight: 500;
-      gap: 3px;
+      font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
       width: 25%;
     }
 
-    .tab-item i { font-size: 20px; }
-    .tab-item.active { color: var(--primary-color); font-weight: 600; }
+    .nav-item.active {
+      color: var(--primary);
+    }
 
-    /* モーダル */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(5px);
-      display: none;
-      justify-content: center;
-      align-items: flex-end;
-      z-index: 2000;
-    }
-    .modal-overlay.active { display: flex; }
-    .modal-content {
-      background: var(--card-bg);
-      width: 100%; max-width: 600px;
-      border-radius: 24px 24px 0 0;
-      padding: 24px;
-    }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 4px; font-weight: 600; }
-    .form-group input {
-      width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);
-      font-size: 15px; outline: none; background: #F8F8FA;
+    .nav-icon {
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="app-title">
-      <i class="fa-solid fa-graduation-cap"></i>
-      <span class="en-text">Smart Vocab</span>
-    </div>
+    <div class="app-title">Smart Vocab & Timer</div>
   </header>
 
   <main>
-    <!-- 1. 教科選択 -->
+    <!-- 教科選択 -->
     <section id="view-subjects" class="view-section active">
-      <div class="section-header">
-        <h1 class="section-title">教科を選択</h1>
-        <p class="section-subtitle">学習する教科を選んでください</p>
-      </div>
-      <div class="subject-grid">
-        <div class="subject-card active-subject" id="subject-card-english" onclick="selectSubject('english')">
-          <span class="subject-badge badge-available">選択中</span>
-          <div class="subject-icon"><i class="fa-solid fa-language"></i></div>
-          <div>
-            <h3 class="en-text">English</h3>
-            <p style="font-size: 11px; opacity: 0.8;">英単語・暗記テスト</p>
-          </div>
-        </div>
-
-        <div class="subject-card" id="subject-card-japanese" onclick="selectSubject('japanese')">
-          <span class="subject-badge badge-available">利用可能</span>
-          <div class="subject-icon"><i class="fa-solid fa-book-open"></i></div>
-          <div>
-            <h3>国語 (漢字2級)</h3>
-            <p style="font-size: 11px; color: var(--text-sub);">漢検2級レベル読みクイズ</p>
-          </div>
-        </div>
-
-        <div class="subject-card disabled">
-          <span class="subject-badge badge-locked">準備中</span>
-          <div class="subject-icon"><i class="fa-solid fa-calculator"></i></div>
-          <div><h3>数学</h3><p style="font-size: 11px; color: var(--text-sub);">公式・定理</p></div>
-        </div>
-
-        <div class="subject-card disabled">
-          <span class="subject-badge badge-locked">準備中</span>
-          <div class="subject-icon"><i class="fa-solid fa-flask"></i></div>
-          <div><h3>理科</h3><p style="font-size: 11px; color: var(--text-sub);">用語・計算</p></div>
-        </div>
+      <div class="section-title">教科選択</div>
+      <div class="section-sub">学習する科目を選んでください</div>
+      <div class="grid">
+        <button class="subject-btn active" id="btn-eng" onclick="setSubject('english')">English</button>
+        <button class="subject-btn" id="btn-jp" onclick="setSubject('japanese')">国語 (漢字)</button>
       </div>
     </section>
 
-    <!-- 2. 単語帳一覧 -->
+    <!-- 単語帳 -->
     <section id="view-words" class="view-section">
-      <div class="section-header">
-        <h1 class="section-title" id="words-title">English Vocab</h1>
-        <p class="section-subtitle">登録されている単語一覧</p>
+      <div class="section-title" id="words-title">English</div>
+      <div class="section-sub">登録中の単語一覧</div>
+
+      <div class="card">
+        <input type="text" id="add-term" class="input-box" placeholder="単語・漢字">
+        <input type="text" id="add-meaning" class="input-box" placeholder="意味・読み">
+        <button class="btn btn-primary" style="width: 100%;" onclick="addWord()">追加する</button>
       </div>
-      <button class="add-btn" onclick="openModal()"><i class="fa-solid fa-plus"></i> 新しい単語を追加</button>
-      <div class="word-list" id="word-list-container"></div>
+
+      <div id="word-list"></div>
     </section>
 
-    <!-- 3. クイズモード -->
+    <!-- クイズ -->
     <section id="view-quiz" class="view-section">
-      <div class="section-header">
-        <h1 class="section-title">単語入力クイズ</h1>
-        <p class="section-subtitle">意味または読みを入力して判定ボタンを押してください</p>
-      </div>
-      
-      <div class="custom-card">
-        <div style="font-size: 12px; color: var(--text-sub); font-weight: 600;" id="quiz-mode-label">問題</div>
-        <div class="quiz-question" id="quiz-question-text">Apple</div>
-        
-        <input type="text" id="quiz-answer-input" class="quiz-input" placeholder="回答を入力..." autocomplete="off">
-        <button class="control-btn btn-next" id="quiz-submit-btn" onclick="checkQuizAnswer()">判定する</button>
+      <div class="section-title">単語クイズ</div>
+      <div class="section-sub">意味を入力して確認しましょう</div>
 
-        <div class="quiz-feedback" id="quiz-feedback"></div>
+      <div class="card" style="text-align: center;">
+        <div id="quiz-q" style="font-size: 28px; font-weight: 700; margin: 15px 0;">---</div>
+        <input type="text" id="quiz-input" class="input-box" placeholder="回答を入力..." style="text-align: center;">
+        <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" id="quiz-btn" onclick="checkAnswer()">判定</button>
+        <div id="quiz-res" style="margin-top: 12px; font-weight: 700; min-height: 20px;"></div>
       </div>
     </section>
 
-    <!-- 4. 学習時間 & ポモドーロタイマー -->
+    <!-- 学習タイマー & 週間グラフ -->
     <section id="view-timer" class="view-section">
-      <div class="section-header">
-        <h1 class="section-title">学習タイマー</h1>
-        <p class="section-subtitle">集中時間と休憩時間をセットして効率UP</p>
-      </div>
+      <div class="section-title">学習タイマー</div>
+      <div class="section-sub">ポモドーロタイマーと週間学習記録</div>
 
-      <div class="custom-card">
-        <div class="timer-status-badge" id="timer-status-badge">集中タイム</div>
+      <div class="card" style="text-align: center;">
+        <div class="timer-badge" id="timer-badge">集中タイム</div>
         <div class="timer-display" id="timer-display">25:00</div>
 
-        <div class="time-setter">
-          <div class="setter-group">
+        <div class="setting-row">
+          <div class="setting-group">
             <label>勉強時間 (分)</label>
-            <input type="number" id="study-min-input" value="25" min="1" max="120" onchange="resetTimer()">
+            <input type="number" id="study-min" value="25" min="1" max="120" onchange="resetTimer()">
           </div>
-          <div class="setter-group">
+          <div class="setting-group">
             <label>休憩時間 (分)</label>
-            <input type="number" id="break-min-input" value="5" min="1" max="60" onchange="resetTimer()">
+            <input type="number" id="break-min" value="5" min="1" max="60" onchange="resetTimer()">
           </div>
         </div>
 
-        <div class="timer-btn-group">
-          <button class="control-btn btn-next" id="timer-start-btn" onclick="toggleTimer()">スタート</button>
-          <button class="control-btn btn-secondary" onclick="resetTimer()">リセット</button>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="start-btn" onclick="toggleTimer()">スタート</button>
+          <button class="btn btn-secondary" onclick="resetTimer()">リセット</button>
         </div>
       </div>
 
-      <!-- 週間グラフ -->
-      <div class="custom-card" style="margin-top: 20px;">
-        <h3 style="font-size: 16px; text-align: left; margin-bottom: 12px;">今週の勉強時間 (分)</h3>
-        <canvas id="weeklyChart" height="180"></canvas>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 12px;">今週の学習時間 (分)</div>
+        <canvas id="chartCanvas"></canvas>
       </div>
     </section>
-
   </main>
 
-  <!-- 追加モーダル -->
-  <div class="modal-overlay" id="add-modal">
-    <div class="modal-content">
-      <h3 style="margin-bottom: 14px;">単語の追加</h3>
-      <div class="form-group">
-        <label>単語 / 漢字</label>
-        <input type="text" id="input-term">
-      </div>
-      <div class="form-group">
-        <label>意味 / 読み（ひらがな）</label>
-        <input type="text" id="input-meaning">
-      </div>
-      <div style="display: flex; gap: 10px; margin-top: 16px;">
-        <button class="control-btn btn-secondary" onclick="closeModal()">キャンセル</button>
-        <button class="control-btn btn-next" onclick="saveWord()">保存</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Apple風 ボトムナビ -->
-  <nav class="apple-tab-bar">
-    <div class="tab-item active" id="tab-subjects" onclick="switchTab('subjects')">
-      <i class="fa-solid fa-shapes"></i>
+  <nav>
+    <div class="nav-item active" id="nav-subjects" onclick="navTo('subjects')">
+      <div class="nav-icon">📚</div>
       <span>教科</span>
     </div>
-    <div class="tab-item" id="tab-words" onclick="switchTab('words')">
-      <i class="fa-solid fa-list-ul"></i>
+    <div class="nav-item" id="nav-words" onclick="navTo('words')">
+      <div class="nav-icon">📝</div>
       <span>単語帳</span>
     </div>
-    <div class="tab-item" id="tab-quiz" onclick="switchTab('quiz')">
-      <i class="fa-solid fa-pen-to-square"></i>
+    <div class="nav-item" id="nav-quiz" onclick="navTo('quiz')">
+      <div class="nav-icon">✏️</div>
       <span>クイズ</span>
     </div>
-    <div class="tab-item" id="tab-timer" onclick="switchTab('timer')">
-      <i class="fa-solid fa-clock"></i>
+    <div class="nav-item" id="nav-timer" onclick="navTo('timer')">
+      <div class="nav-icon">⏱️</div>
       <span>タイマー</span>
     </div>
   </nav>
 
   <script>
-    // --- グローバル変数 ---
+    // Data Storage
     let currentSubject = 'english';
+    let words = {
+      english: [
+        { id: 1, term: 'Apple', meaning: 'りんご' },
+        { id: 2, term: 'Challenge', meaning: '挑戦' }
+      ],
+      japanese: [
+        { id: 1, term: '恣意', meaning: 'しい' },
+        { id: 2, term: '相殺', meaning: 'そうさい' }
+      ]
+    };
 
-    let englishWords = JSON.parse(localStorage.getItem('smart_vocab_english')) || [
-      { id: '1', term: 'Apple', meaning: 'りんご' },
-      { id: '2', term: 'Persistent', meaning: '粘り強い' },
-      { id: '3', term: 'Challenge', meaning: '挑戦' }
-    ];
+    // Load LocalStorage
+    if (localStorage.getItem('app_words')) {
+      try { words = JSON.parse(localStorage.getItem('app_words')); } catch(e){}
+    }
 
-    let japaneseWords = JSON.parse(localStorage.getItem('smart_vocab_japanese')) || [
-      { id: 'j1', term: '恣意', meaning: 'しい' },
-      { id: 'j2', term: '破天荒', meaning: 'はてんこう' },
-      { id: 'j3', term: '熨斗', meaning: 'のし' },
-      { id: 'j4', term: '躊躇', meaning: 'ちゅうちょ' },
-      { id: 'j5', term: '相殺', meaning: 'そうさい' },
-      { id: 'j6', term: '脆弱', meaning: 'ぜいじゃく' }
-    ];
+    let weeklyData = [30, 45, 20, 50, 15, 60, 0]; // Mon-Sun
+    if (localStorage.getItem('app_weekly')) {
+      try { weeklyData = JSON.parse(localStorage.getItem('app_weekly')); } catch(e){}
+    }
 
-    let currentQuizIndex = 0;
-    let isQuizAnswered = false;
-
-    // タイマー関連
-    let timerInterval = null;
-    let isTimerRunning = false;
-    let isStudyMode = true; // true: 勉強, false: 休憩
-    let timeLeft = 25 * 60; // 秒
-
-    // 週間学習データ [月, 火, 水, 木, 金, 土, 日]
-    let weeklyStudyData = JSON.parse(localStorage.getItem('smart_vocab_weekly')) || [30, 45, 25, 50, 20, 60, 15];
-    let chartInstance = null;
-
-    // --- タブ＆教科切り替え ---
-    function switchTab(viewName) {
+    // Navigation
+    function navTo(target) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
-      
-      const targetView = document.getElementById(`view-${viewName}`);
-      const targetTab = document.getElementById(`tab-${viewName}`);
-      
-      if (targetView) targetView.classList.add('active');
-      if (targetTab) targetTab.classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
-      if (viewName === 'words') renderWordList();
-      if (viewName === 'quiz') startQuiz();
-      if (viewName === 'timer') initChart();
+      document.getElementById(`view-${target}`).classList.add('active');
+      document.getElementById(`nav-${target}`).classList.add('active');
+
+      if (target === 'words') renderWords();
+      if (target === 'quiz') startQuiz();
+      if (target === 'timer') drawChart();
     }
 
-    function selectSubject(subject) {
-      currentSubject = subject;
-      document.querySelectorAll('.subject-card').forEach(el => el.classList.remove('active-subject'));
-      const selectedEl = document.getElementById(`subject-card-${subject}`);
-      if (selectedEl) selectedEl.classList.add('active-subject');
-
-      document.getElementById('words-title').innerText = subject === 'english' ? 'English Vocab' : '国語 (漢検2級漢字)';
-      switchTab('words');
+    function setSubject(sub) {
+      currentSubject = sub;
+      document.getElementById('btn-eng').classList.toggle('active', sub === 'english');
+      document.getElementById('btn-jp').classList.toggle('active', sub === 'japanese');
+      document.getElementById('words-title').innerText = sub === 'english' ? 'English' : '国語 (漢字)';
+      navTo('words');
     }
 
-    function getActiveDataset() {
-      return currentSubject === 'english' ? englishWords : japaneseWords;
-    }
-
-    // --- 単語帳 ---
-    function renderWordList() {
-      const container = document.getElementById('word-list-container');
-      const dataset = getActiveDataset();
-      if (!container) return;
-
-      if (dataset.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color:var(--text-sub); margin-top:30px;">データがありません</p>`;
+    // Word List Management
+    function renderWords() {
+      const container = document.getElementById('word-list');
+      const list = words[currentSubject] || [];
+      if (list.length === 0) {
+        container.innerHTML = '<div style="text-align:center; color:var(--text-sub); margin-top:20px;">単語がありません</div>';
         return;
       }
-
-      container.innerHTML = dataset.map(w => `
+      container.innerHTML = list.map(w => `
         <div class="word-item">
           <div>
-            <div class="word-main ${currentSubject === 'english' ? 'en-text' : ''}">${w.term}</div>
-            <div class="word-sub">${w.meaning}</div>
+            <div class="word-term">${escapeHtml(w.term)}</div>
+            <div class="word-meaning">${escapeHtml(w.meaning)}</div>
           </div>
-          <div>
-            ${currentSubject === 'english' ? `<button class="icon-btn" onclick="speakText('${w.term}')"><i class="fa-solid fa-volume-high"></i></button>` : ''}
-            <button class="icon-btn" onclick="deleteWord('${w.id}')"><i class="fa-solid fa-trash-can"></i></button>
-          </div>
+          <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="deleteWord(${w.id})">削除</button>
         </div>
       `).join('');
     }
 
-    function speakText(text) {
-      const uttr = new SpeechSynthesisUtterance(text);
-      uttr.lang = 'en-US';
-      window.speechSynthesis.speak(uttr);
-    }
+    function addWord() {
+      const termEl = document.getElementById('add-term');
+      const meaningEl = document.getElementById('add-meaning');
+      if (!termEl.value.trim() || !meaningEl.value.trim()) return alert('両方入力してください');
 
-    function openModal() { document.getElementById('add-modal').classList.add('active'); }
-    function closeModal() { document.getElementById('add-modal').classList.remove('active'); }
-
-    function saveWord() {
-      const term = document.getElementById('input-term').value.trim();
-      const meaning = document.getElementById('input-meaning').value.trim();
-      if (!term || !meaning) return alert("両方入力してください");
-
-      const newWord = { id: Date.now().toString(), term, meaning };
-      if (currentSubject === 'english') {
-        englishWords.push(newWord);
-        localStorage.setItem('smart_vocab_english', JSON.stringify(englishWords));
-      } else {
-        japaneseWords.push(newWord);
-        localStorage.setItem('smart_vocab_japanese', JSON.stringify(japaneseWords));
-      }
-
-      document.getElementById('input-term').value = '';
-      document.getElementById('input-meaning').value = '';
-      closeModal();
-      renderWordList();
+      words[currentSubject].push({
+        id: Date.now(),
+        term: termEl.value.trim(),
+        meaning: meaningEl.value.trim()
+      });
+      localStorage.setItem('app_words', JSON.stringify(words));
+      termEl.value = '';
+      meaningEl.value = '';
+      renderWords();
     }
 
     function deleteWord(id) {
-      if (!confirm("削除しますか？")) return;
-      if (currentSubject === 'english') {
-        englishWords = englishWords.filter(w => w.id !== id);
-        localStorage.setItem('smart_vocab_english', JSON.stringify(englishWords));
+      words[currentSubject] = words[currentSubject].filter(w => w.id !== id);
+      localStorage.setItem('app_words', JSON.stringify(words));
+      renderWords();
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    // Quiz
+    let quizIdx = 0;
+    let quizAnswered = false;
+
+    function startQuiz() {
+      const list = words[currentSubject] || [];
+      const qEl = document.getElementById('quiz-q');
+      const inputEl = document.getElementById('quiz-input');
+      const resEl = document.getElementById('quiz-res');
+      const btnEl = document.getElementById('quiz-btn');
+
+      if (list.length === 0) {
+        qEl.innerText = '単語が登録されていません';
+        inputEl.style.display = 'none';
+        btnEl.style.display = 'none';
+        return;
+      }
+
+      inputEl.style.display = 'block';
+      btnEl.style.display = 'block';
+      quizAnswered = false;
+      const current = list[quizIdx % list.length];
+      qEl.innerText = current.term;
+      inputEl.value = '';
+      inputEl.disabled = false;
+      resEl.innerText = '';
+      btnEl.innerText = '判定';
+    }
+
+    function checkAnswer() {
+      const list = words[currentSubject] || [];
+      if (list.length === 0) return;
+
+      if (quizAnswered) {
+        quizIdx = (quizIdx + 1) % list.length;
+        startQuiz();
+        return;
+      }
+
+      const inputVal = document.getElementById('quiz-input').value.trim().toLowerCase();
+      const current = list[quizIdx % list.length];
+      const correctVal = current.meaning.trim().toLowerCase();
+      const resEl = document.getElementById('quiz-res');
+
+      if (inputVal && (inputVal === correctVal || correctVal.includes(inputVal))) {
+        resEl.innerText = '⭕ 正解！';
+        resEl.style.color = 'var(--break-color)';
       } else {
-        japaneseWords = japaneseWords.filter(w => w.id !== id);
-        localStorag
+        resEl.innerText = `❌ 不正解... (正解: ${current.meaning})`;
+        resEl.style.color = '#FF3B30';
+      }
+
+      quizAnswered = true;
+      document.getElementById('quiz-input').disabled = true;
+      document.getElementById('quiz-btn').innerText = '次の問題';
+    }
+
+    // Timer Logic
+    let timerId = null;
+    let isRunning = false;
+    let isStudy = true;
+    let timeLeft = 25 * 60;
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timeLeft / 60);
+      const s = timeLeft % 60;
+      document.getElementById('timer-display').innerText = 
+        `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('start-btn');
+      if (isRunning) {
+        clearInterval(timerId);
+        isRunning = false;
+        btn.innerText = '再開';
+      } else {
+        isRunning = true;
+        btn.innerText = '一時停止';
+        timerId = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerId);
+            isRunning = false;
+            btn.innerText = 'スタート';
+
+            if (isStudy) {
+              alert('集中タイム終了！休憩しましょう！');
+              const dayIdx = (new Date().getDay() + 6) % 7; // Mon=0, Sun=6
+              const mins = parseInt(document.getElementById('study-min').value) || 25;
+              weeklyData[dayIdx] += mins;
+              localStorage.setItem('app_weekly', JSON.stringify(weeklyData));
+              drawChart();
+
+              isStudy = false;
+              document.getElementById('timer-badge').innerText = '休憩タイム';
+              document.getElementById('timer-badge').classList.add('break');
+              timeLeft = (parseInt(document.getElementById('break-min').value) || 5) * 60;
+            } else {
+              alert('休憩終了！学習を再開しましょう！');
+              isStudy = true;
+              document.getElementById('timer-badge').innerText = '集中タイム';
+              document.getElementById('timer-badge').classList.remove('break');
+              timeLeft = (parseInt(document.getElementById('study-min').value) || 25) * 60;
+            }
+            updateTimerDisplay();
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerId);
+      isRunning = false;
+      isStudy = true;
+      document.getElementById('start-btn').innerText = 'スタート';
+      document.getElementById('timer-badge').innerText = '集中タイム';
+      document.getElementById('timer-badge').classList.remove('break');
+      timeLeft = (parseInt(document.getElementById('study-min').value) || 25) * 60;
+      updateTimerDisplay();
+    }
+
+    // Native Canvas Chart (No external Library Dependency)
+    function drawChart() {
+      const canvas = document.getElementById('chartCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = rect.height;
+      ctx.clearRect(0, 0, width, height);
+
+      const labels = ['月', '火', '水', '木', '金', '土', '日'];
+      const maxVal = Math.max(...weeklyData, 60);
+      const paddingBottom = 24;
+      const paddingTop = 20;
+      const chartHeight = height - paddingBottom - paddingTop;
+      const barWidth = 24;
+      const step = width / labels.length;
+
+      labels.forEach((label, i) => {
+        const x = i * step + step / 2;
+        const val = weeklyData[i];
+        const barH = (val / maxVal) * chartHeight;
+        const y = height - paddingBottom - barH;
+
+        // Bar
+        ctx.fillStyle = '#007AFF';
+        ctx.beginPath();
+        if (barH > 0) {
+          ctx.roundRect(x - barWidth / 2, y, barWidth, barH, [4, 4, 0, 0]);
+        }
+        ctx.fill();
+
+        // Label (Day)
+        ctx.fillStyle = '#8E8E93';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, x, height - 6);
+
+        // Value Label
+        if (val > 0) {
+          ctx.fillStyle = '#1C1C1E';
+          ctx.font = 'bold 10px sans-serif';
+          ctx.fillText(`${val}分`, x, y - 4);
+        }
+      });
+    }
+
+    // Init
+    window.addEventListener('resize', drawChart);
+    resetTimer();
+  </script>
+</body>
+</html>
+
