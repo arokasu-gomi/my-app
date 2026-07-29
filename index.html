@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Smart Vocab - 暗記＆クイズ</title>
+  <title>Smart Vocab</title>
 
-  <!-- Google Fonts (Google Sans風モダンサンセリフ) -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,11 +14,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
-    /* ==========================================
-       1. 基本設定 & フォント
-       ========================================== */
     :root {
-      --primary-color: #007AFF; /* Apple Blue */
+      --primary-color: #007AFF;
       --primary-gradient: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
       --success-color: #34C759;
       --error-color: #FF3B30;
@@ -48,7 +45,6 @@
       min-height: 100vh;
       padding-bottom: 95px;
       overflow-x: hidden;
-      letter-spacing: -0.01em;
     }
 
     .en-text {
@@ -56,7 +52,6 @@
       font-weight: 600;
     }
 
-    /* ヘッダー */
     header {
       position: sticky;
       top: 0;
@@ -82,7 +77,6 @@
       gap: 8px;
     }
 
-    /* メインエリア */
     main {
       max-width: 600px;
       margin: 0 auto;
@@ -118,7 +112,6 @@
       margin-top: 4px;
     }
 
-    /* 教科選択 */
     .subject-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -138,7 +131,6 @@
       border: 1px solid var(--border-color);
       cursor: pointer;
       box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-      transition: transform 0.15s;
     }
 
     .subject-card:active {
@@ -158,9 +150,7 @@
       background: #EFEFF4;
     }
 
-    .subject-icon {
-      font-size: 28px;
-    }
+    .subject-icon { font-size: 28px; }
 
     .subject-badge {
       position: absolute;
@@ -176,7 +166,6 @@
     .active-subject .badge-available { background: rgba(255, 255, 255, 0.25); color: #FFF; }
     .badge-locked { background: rgba(142, 142, 147, 0.2); color: var(--text-sub); }
 
-    /* 単語帳リスト */
     .add-btn {
       width: 100%;
       background: var(--primary-gradient);
@@ -219,7 +208,6 @@
       cursor: pointer;
     }
 
-    /* クイズ & カード共通コンテナ */
     .quiz-card {
       background: var(--card-bg);
       border-radius: 24px;
@@ -282,7 +270,6 @@
 
     .btn-next { background: var(--primary-gradient); color: white; }
 
-    /* Apple風 ボトムナビ */
     .apple-tab-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -307,13 +294,12 @@
       font-weight: 500;
       gap: 3px;
       cursor: pointer;
-      width: 25%;
+      width: 33%;
     }
 
     .tab-item i { font-size: 20px; }
     .tab-item.active { color: var(--primary-color); font-weight: 600; }
 
-    /* モーダル */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -349,14 +335,13 @@
   </header>
 
   <main>
-    <!-- 1. 教科選択 -->
+    <!-- 教科選択 -->
     <section id="view-subjects" class="view-section active">
       <div class="section-header">
         <h1 class="section-title">教科を選択</h1>
         <p class="section-subtitle">学習する教科を選んでください</p>
       </div>
       <div class="subject-grid">
-        <!-- 英語 -->
         <div class="subject-card active-subject" id="subject-card-english" onclick="selectSubject('english')">
           <span class="subject-badge badge-available">選択中</span>
           <div class="subject-icon"><i class="fa-solid fa-language"></i></div>
@@ -366,7 +351,6 @@
           </div>
         </div>
 
-        <!-- 国語 (漢検2級) -->
         <div class="subject-card" id="subject-card-japanese" onclick="selectSubject('japanese')">
           <span class="subject-badge badge-available">利用可能</span>
           <div class="subject-icon"><i class="fa-solid fa-book-open"></i></div>
@@ -376,14 +360,12 @@
           </div>
         </div>
 
-        <!-- 数学 -->
         <div class="subject-card disabled">
           <span class="subject-badge badge-locked">準備中</span>
           <div class="subject-icon"><i class="fa-solid fa-calculator"></i></div>
           <div><h3>数学</h3><p style="font-size: 11px; color: var(--text-sub);">公式・定理</p></div>
         </div>
 
-        <!-- 理科 -->
         <div class="subject-card disabled">
           <span class="subject-badge badge-locked">準備中</span>
           <div class="subject-icon"><i class="fa-solid fa-flask"></i></div>
@@ -392,7 +374,7 @@
       </div>
     </section>
 
-    <!-- 2. 単語帳一覧 -->
+    <!-- 単語帳一覧 -->
     <section id="view-words" class="view-section">
       <div class="section-header">
         <h1 class="section-title" id="words-title">English Vocab</h1>
@@ -402,7 +384,7 @@
       <div class="word-list" id="word-list-container"></div>
     </section>
 
-    <!-- 3. テキスト入力クイズモード -->
+    <!-- クイズモード -->
     <section id="view-quiz" class="view-section">
       <div class="section-header">
         <h1 class="section-title">単語入力クイズ</h1>
@@ -421,19 +403,18 @@
         <div class="quiz-feedback" id="quiz-feedback"></div>
       </div>
     </section>
-
   </main>
 
-  <!-- 単語追加モーダル -->
+  <!-- 追加モーダル -->
   <div class="modal-overlay" id="add-modal">
     <div class="modal-content">
       <h3 style="margin-bottom: 14px;">単語の追加</h3>
       <div class="form-group">
-        <label id="modal-label-term">単語 / 漢字</label>
+        <label>単語 / 漢字</label>
         <input type="text" id="input-term">
       </div>
       <div class="form-group">
-        <label id="modal-label-meaning">意味 / 読み（ひらがな）</label>
+        <label>意味 / 読み（ひらがな）</label>
         <input type="text" id="input-meaning">
       </div>
       <div style="display: flex; gap: 10px; margin-top: 16px;">
@@ -460,17 +441,14 @@
   </nav>
 
   <script>
-    // 現在の教科 (english / japanese)
     let currentSubject = 'english';
 
-    // 英語データ
     let englishWords = JSON.parse(localStorage.getItem('smart_vocab_english')) || [
       { id: '1', term: 'Apple', meaning: 'りんご' },
       { id: '2', term: 'Persistent', meaning: '粘り強い' },
       { id: '3', term: 'Challenge', meaning: '挑戦' }
     ];
 
-    // 国語 (漢検2級・準2級レベル漢字読みプリセット)
     let japaneseWords = JSON.parse(localStorage.getItem('smart_vocab_japanese')) || [
       { id: 'j1', term: '恣意', meaning: 'しい' },
       { id: 'j2', term: '破天荒', meaning: 'はてんこう' },
@@ -485,12 +463,10 @@
     let currentQuizIndex = 0;
     let isQuizAnswered = false;
 
-    // 現在の教科のデータ取得
     function getActiveDataset() {
       return currentSubject === 'english' ? englishWords : japaneseWords;
     }
 
-    // タブ切り替え
     function switchTab(viewName) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
@@ -505,7 +481,6 @@
       if (viewName === 'quiz') startQuiz();
     }
 
-    // 教科選択
     function selectSubject(subject) {
       currentSubject = subject;
 
@@ -529,7 +504,6 @@
       switchTab('words');
     }
 
-    // 単語リスト描写
     function renderWordList() {
       const container = document.getElementById('word-list-container');
       const dataset = getActiveDataset();
@@ -554,14 +528,12 @@
       `).join('');
     }
 
-    // 音声読み上げ
     function speakText(text) {
       const uttr = new SpeechSynthesisUtterance(text);
       uttr.lang = 'en-US';
       window.speechSynthesis.speak(uttr);
     }
 
-    // クイズモード処理
     function startQuiz() {
       const dataset = getActiveDataset();
       if (dataset.length === 0) {
@@ -586,7 +558,6 @@
       if (dataset.length === 0) return;
 
       if (isQuizAnswered) {
-        // 次の問題へ
         currentQuizIndex = (currentQuizIndex + 1) % dataset.length;
         startQuiz();
         return;
@@ -598,7 +569,6 @@
 
       const feedbackEl = document.getElementById('quiz-feedback');
 
-      // 部分一致または完全一致の判定
       if (inputVal && (inputVal === correctVal || correctVal.includes(inputVal))) {
         feedbackEl.innerText = `⭕ 正解！ （正解: ${current.meaning}）`;
         feedbackEl.className = 'quiz-feedback correct';
@@ -612,7 +582,6 @@
       document.getElementById('quiz-submit-btn').innerText = '次の問題へ';
     }
 
-    // モーダル
     function openModal() { document.getElementById('add-modal').classList.add('active'); }
     function closeModal() { document.getElementById('add-modal').classList.remove('active'); }
 
@@ -644,4 +613,24 @@
         localStorage.setItem('smart_vocab_english', JSON.stringify(englishWords));
       } else {
         japaneseWords = japaneseWords.filter(w => w.id !== id);
-        localStorage.setItem('smart_vocab_japanese', JSON.stringify(japanese
+        localStorage.setItem('smart_vocab_japanese', JSON.stringify(japaneseWords));
+      }
+      renderWordList();
+    }
+
+    // イベントリスナーの安全な設定
+    window.addEventListener('DOMContentLoaded', () => {
+      const quizInput = document.getElementById('quiz-answer-input');
+      if (quizInput) {
+        quizInput.addEventListener('keypress', function (e) {
+          if (e.key === 'Enter') {
+            checkQuizAnswer();
+          }
+        });
+      }
+      renderWordList();
+    });
+  </script>
+</body>
+</html>
+
