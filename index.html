@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Smart Vocab - 暗記アプリ</title>
+  <title>Smart Vocab - 暗記＆クイズ</title>
 
-  <!-- Google Fonts (Google Sansに極めて近いモダンサンセリフ) -->
+  <!-- Google Fonts (Google Sans風モダンサンセリフ) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,19 +13,16 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Firebase v10 SDK (Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
   <style>
     /* ==========================================
-       1. 基本設定 & フォント (Google Sans + ヒラギノ角ゴ)
+       1. 基本設定 & フォント
        ========================================== */
     :root {
       --primary-color: #007AFF; /* Apple Blue */
       --primary-gradient: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
-      --bg-color: #F2F2F7;     /* iOS Grouped Background */
+      --success-color: #34C759;
+      --error-color: #FF3B30;
+      --bg-color: #F2F2F7;
       --card-bg: #FFFFFF;
       --text-main: #1C1C1E;
       --text-sub: #8E8E93;
@@ -50,7 +46,7 @@
       background-color: var(--bg-color);
       color: var(--text-main);
       min-height: 100vh;
-      padding-bottom: 100px;
+      padding-bottom: 95px;
       overflow-x: hidden;
       letter-spacing: -0.01em;
     }
@@ -60,9 +56,7 @@
       font-weight: 600;
     }
 
-    /* ==========================================
-       2. ヘッダー
-       ========================================== */
+    /* ヘッダー */
     header {
       position: sticky;
       top: 0;
@@ -88,31 +82,7 @@
       gap: 8px;
     }
 
-    .login-btn {
-      background: #FFFFFF;
-      border: 1px solid var(--border-color);
-      color: var(--primary-color);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    .user-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    /* ==========================================
-       3. メインコンテンツ & タブ切替
-       ========================================== */
+    /* メインエリア */
     main {
       max-width: 600px;
       margin: 0 auto;
@@ -168,6 +138,7 @@
       border: 1px solid var(--border-color);
       cursor: pointer;
       box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+      transition: transform 0.15s;
     }
 
     .subject-card:active {
@@ -248,69 +219,70 @@
       cursor: pointer;
     }
 
-    /* 暗記カード */
-    .flashcard {
-      width: 100%;
-      height: 240px;
+    /* クイズ & カード共通コンテナ */
+    .quiz-card {
       background: var(--card-bg);
       border-radius: 24px;
       border: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+      padding: 24px;
       text-align: center;
-      cursor: pointer;
       box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-      margin: 15px 0;
+      margin-top: 10px;
     }
 
-    .flashcard-term { font-size: 32px; font-weight: 700; }
-    .flashcard-meaning { font-size: 22px; color: var(--primary-color); font-weight: 600; display: none; margin-top: 10px; }
-    .flashcard.flipped .flashcard-meaning { display: block; }
-    .flashcard-hint { margin-top: 20px; font-size: 11px; color: var(--text-sub); }
+    .quiz-question {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 20px 0 10px 0;
+    }
 
-    .card-controls { display: flex; gap: 12px; }
+    .quiz-input-group {
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .quiz-input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-color);
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      font-family: var(--font-family);
+      background: #F8F8FA;
+    }
+
+    .quiz-input:focus {
+      border-color: var(--primary-color);
+      background: #FFF;
+    }
+
+    .quiz-feedback {
+      font-size: 15px;
+      font-weight: 700;
+      min-height: 24px;
+      margin-top: 8px;
+    }
+
+    .quiz-feedback.correct { color: var(--success-color); }
+    .quiz-feedback.incorrect { color: var(--error-color); }
+
     .control-btn {
-      flex: 1;
-      padding: 12px;
+      width: 100%;
+      padding: 14px;
       border-radius: 16px;
       border: none;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
     }
-    .btn-prev { background: #E5E5EA; color: var(--text-main); }
+
     .btn-next { background: var(--primary-gradient); color: white; }
 
-    /* モーダル */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(5px);
-      display: none;
-      justify-content: center;
-      align-items: flex-end;
-      z-index: 2000;
-    }
-    .modal-overlay.active { display: flex; }
-    .modal-content {
-      background: var(--card-bg);
-      width: 100%;
-      max-width: 600px;
-      border-radius: 24px 24px 0 0;
-      padding: 24px;
-    }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 4px; font-weight: 600; }
-    .form-group input {
-      width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);
-      font-size: 15px; outline: none; background: #F8F8FA;
-    }
-
-    /* Apple ボトムナビゲーション */
+    /* Apple風 ボトムナビ */
     .apple-tab-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -335,11 +307,36 @@
       font-weight: 500;
       gap: 3px;
       cursor: pointer;
-      width: 33%;
+      width: 25%;
     }
 
     .tab-item i { font-size: 20px; }
     .tab-item.active { color: var(--primary-color); font-weight: 600; }
+
+    /* モーダル */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 2000;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: var(--card-bg);
+      width: 100%; max-width: 600px;
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 4px; font-weight: 600; }
+    .form-group input {
+      width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);
+      font-size: 15px; outline: none; background: #F8F8FA;
+    }
   </style>
 </head>
 <body>
@@ -349,90 +346,98 @@
       <i class="fa-solid fa-graduation-cap"></i>
       <span class="en-text">Smart Vocab</span>
     </div>
-    <div class="user-profile">
-      <button class="login-btn" id="auth-btn" onclick="handleAuth()">
-        <i class="fa-brands fa-google"></i>
-        <span>ログイン</span>
-      </button>
-    </div>
   </header>
 
   <main>
-    <!-- 教科選択 -->
+    <!-- 1. 教科選択 -->
     <section id="view-subjects" class="view-section active">
       <div class="section-header">
         <h1 class="section-title">教科を選択</h1>
         <p class="section-subtitle">学習する教科を選んでください</p>
       </div>
       <div class="subject-grid">
-        <div class="subject-card active-subject" onclick="selectSubject('english')">
-          <span class="subject-badge badge-available">利用可能</span>
+        <!-- 英語 -->
+        <div class="subject-card active-subject" id="subject-card-english" onclick="selectSubject('english')">
+          <span class="subject-badge badge-available">選択中</span>
           <div class="subject-icon"><i class="fa-solid fa-language"></i></div>
           <div>
             <h3 class="en-text">English</h3>
-            <p style="font-size: 11px; opacity: 0.8;">英単語帳</p>
+            <p style="font-size: 11px; opacity: 0.8;">英単語・暗記テスト</p>
           </div>
         </div>
+
+        <!-- 国語 (漢検2級) -->
+        <div class="subject-card" id="subject-card-japanese" onclick="selectSubject('japanese')">
+          <span class="subject-badge badge-available">利用可能</span>
+          <div class="subject-icon"><i class="fa-solid fa-book-open"></i></div>
+          <div>
+            <h3>国語 (漢字2級)</h3>
+            <p style="font-size: 11px; color: var(--text-sub);">漢検2級レベル読みクイズ</p>
+          </div>
+        </div>
+
+        <!-- 数学 -->
         <div class="subject-card disabled">
           <span class="subject-badge badge-locked">準備中</span>
           <div class="subject-icon"><i class="fa-solid fa-calculator"></i></div>
           <div><h3>数学</h3><p style="font-size: 11px; color: var(--text-sub);">公式・定理</p></div>
         </div>
+
+        <!-- 理科 -->
         <div class="subject-card disabled">
           <span class="subject-badge badge-locked">準備中</span>
           <div class="subject-icon"><i class="fa-solid fa-flask"></i></div>
           <div><h3>理科</h3><p style="font-size: 11px; color: var(--text-sub);">用語・計算</p></div>
         </div>
-        <div class="subject-card disabled">
-          <span class="subject-badge badge-locked">準備中</span>
-          <div class="subject-icon"><i class="fa-solid fa-earth-americas"></i></div>
-          <div><h3>社会</h3><p style="font-size: 11px; color: var(--text-sub);">歴史・地理</p></div>
-        </div>
       </div>
     </section>
 
-    <!-- 単語帳一覧 -->
+    <!-- 2. 単語帳一覧 -->
     <section id="view-words" class="view-section">
       <div class="section-header">
-        <h1 class="section-title en-text">English Vocab</h1>
-        <p class="section-subtitle">登録中の英単語</p>
+        <h1 class="section-title" id="words-title">English Vocab</h1>
+        <p class="section-subtitle">登録されている単語一覧</p>
       </div>
       <button class="add-btn" onclick="openModal()"><i class="fa-solid fa-plus"></i> 新しい単語を追加</button>
       <div class="word-list" id="word-list-container"></div>
     </section>
 
-    <!-- 暗記カード -->
-    <section id="view-card" class="view-section">
+    <!-- 3. テキスト入力クイズモード -->
+    <section id="view-quiz" class="view-section">
       <div class="section-header">
-        <h1 class="section-title">暗記カード</h1>
-        <p class="section-subtitle">タップで裏返します</p>
+        <h1 class="section-title">単語入力クイズ</h1>
+        <p class="section-subtitle">意味または読みを入力して判定ボタンを押してください</p>
       </div>
-      <div class="flashcard" id="flashcard" onclick="flipCard()">
-        <div class="flashcard-term en-text" id="card-term">Apple</div>
-        <div class="flashcard-meaning" id="card-meaning">りんご</div>
-        <div class="flashcard-hint"><i class="fa-solid fa-hand-pointer"></i> タップで答えを表示</div>
-      </div>
-      <div class="card-controls">
-        <button class="control-btn btn-prev" onclick="prevCard()"><i class="fa-solid fa-arrow-left"></i> 前へ</button>
-        <button class="control-btn btn-next" onclick="nextCard()">次へ <i class="fa-solid fa-arrow-right"></i></button>
+      
+      <div class="quiz-card">
+        <div style="font-size: 12px; color: var(--text-sub); font-weight: 600;" id="quiz-mode-label">問題</div>
+        <div class="quiz-question" id="quiz-question-text">Apple</div>
+        
+        <div class="quiz-input-group">
+          <input type="text" id="quiz-answer-input" class="quiz-input" placeholder="回答を入力..." autocomplete="off">
+          <button class="control-btn btn-next" id="quiz-submit-btn" onclick="checkQuizAnswer()">判定する</button>
+        </div>
+
+        <div class="quiz-feedback" id="quiz-feedback"></div>
       </div>
     </section>
+
   </main>
 
-  <!-- 追加モーダル -->
+  <!-- 単語追加モーダル -->
   <div class="modal-overlay" id="add-modal">
     <div class="modal-content">
-      <h3 style="margin-bottom: 14px;">新しい単語を追加</h3>
+      <h3 style="margin-bottom: 14px;">単語の追加</h3>
       <div class="form-group">
-        <label>英単語 (English)</label>
-        <input type="text" id="input-term" class="en-text" placeholder="例: persistent">
+        <label id="modal-label-term">単語 / 漢字</label>
+        <input type="text" id="input-term">
       </div>
       <div class="form-group">
-        <label>日本語訳 (Japanese)</label>
-        <input type="text" id="input-meaning" placeholder="例: 粘り強い">
+        <label id="modal-label-meaning">意味 / 読み（ひらがな）</label>
+        <input type="text" id="input-meaning">
       </div>
       <div style="display: flex; gap: 10px; margin-top: 16px;">
-        <button class="control-btn btn-prev" onclick="closeModal()">キャンセル</button>
+        <button class="control-btn" style="background:#E5E5EA;" onclick="closeModal()">キャンセル</button>
         <button class="control-btn btn-next" onclick="saveWord()">保存</button>
       </div>
     </div>
@@ -448,22 +453,44 @@
       <i class="fa-solid fa-list-ul"></i>
       <span>単語帳</span>
     </div>
-    <div class="tab-item" id="tab-card" onclick="switchTab('card')">
-      <i class="fa-solid fa-clone"></i>
-      <span>暗記カード</span>
+    <div class="tab-item" id="tab-quiz" onclick="switchTab('quiz')">
+      <i class="fa-solid fa-pen-to-square"></i>
+      <span>クイズ</span>
     </div>
   </nav>
 
   <script>
-    // 初期サンプルデータ
-    let words = JSON.parse(localStorage.getItem('smart_vocab_words')) || [
-      { id: '1', term: 'Apple', meaning: 'りんご' },
-      { id: '2', term: 'Book', meaning: '本' },
-      { id: '3', term: 'Challenge', meaning: '挑戦する' }
-    ];
-    let currentCardIndex = 0;
+    // 現在の教科 (english / japanese)
+    let currentSubject = 'english';
 
-    // タブ切り替え（必ず動くように独立化）
+    // 英語データ
+    let englishWords = JSON.parse(localStorage.getItem('smart_vocab_english')) || [
+      { id: '1', term: 'Apple', meaning: 'りんご' },
+      { id: '2', term: 'Persistent', meaning: '粘り強い' },
+      { id: '3', term: 'Challenge', meaning: '挑戦' }
+    ];
+
+    // 国語 (漢検2級・準2級レベル漢字読みプリセット)
+    let japaneseWords = JSON.parse(localStorage.getItem('smart_vocab_japanese')) || [
+      { id: 'j1', term: '恣意', meaning: 'しい' },
+      { id: 'j2', term: '破天荒', meaning: 'はてんこう' },
+      { id: 'j3', term: '熨斗', meaning: 'のし' },
+      { id: 'j4', term: '躊躇', meaning: 'ちゅうちょ' },
+      { id: 'j5', term: '相殺', meaning: 'そうさい' },
+      { id: 'j6', term: '脆弱', meaning: 'ぜいじゃく' },
+      { id: 'j7', term: '頒布', meaning: 'はんぷ' },
+      { id: 'j8', term: '忖度', meaning: 'そんたく' }
+    ];
+
+    let currentQuizIndex = 0;
+    let isQuizAnswered = false;
+
+    // 現在の教科のデータ取得
+    function getActiveDataset() {
+      return currentSubject === 'english' ? englishWords : japaneseWords;
+    }
+
+    // タブ切り替え
     function switchTab(viewName) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
@@ -473,67 +500,119 @@
       
       if (targetView) targetView.classList.add('active');
       if (targetTab) targetTab.classList.add('active');
+
+      if (viewName === 'words') renderWordList();
+      if (viewName === 'quiz') startQuiz();
     }
 
+    // 教科選択
     function selectSubject(subject) {
-      if (subject === 'english') {
-        switchTab('words');
+      currentSubject = subject;
+
+      document.querySelectorAll('.subject-card').forEach(el => {
+        el.classList.remove('active-subject');
+        const badge = el.querySelector('.subject-badge');
+        if (badge && !el.classList.contains('disabled')) {
+          badge.textContent = '利用可能';
+          badge.className = 'subject-badge badge-available';
+        }
+      });
+
+      const selectedEl = document.getElementById(`subject-card-${subject}`);
+      if (selectedEl) {
+        selectedEl.classList.add('active-subject');
+        const badge = selectedEl.querySelector('.subject-badge');
+        if (badge) badge.textContent = '選択中';
       }
+
+      document.getElementById('words-title').innerText = subject === 'english' ? 'English Vocab' : '国語 (漢検2級漢字)';
+      switchTab('words');
     }
 
-    // レンダリング
+    // 単語リスト描写
     function renderWordList() {
       const container = document.getElementById('word-list-container');
+      const dataset = getActiveDataset();
       if (!container) return;
-      if (words.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color:var(--text-sub); margin-top:30px;">単語がありません</p>`;
+
+      if (dataset.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:var(--text-sub); margin-top:30px;">データがありません</p>`;
         return;
       }
 
-      container.innerHTML = words.map(w => `
+      container.innerHTML = dataset.map(w => `
         <div class="word-item">
           <div>
-            <div class="word-main en-text">${w.term}</div>
+            <div class="word-main ${currentSubject === 'english' ? 'en-text' : ''}">${w.term}</div>
             <div class="word-sub">${w.meaning}</div>
           </div>
           <div>
-            <button class="icon-btn" onclick="speakText('${w.term}')"><i class="fa-solid fa-volume-high"></i></button>
+            ${currentSubject === 'english' ? `<button class="icon-btn" onclick="speakText('${w.term}')"><i class="fa-solid fa-volume-high"></i></button>` : ''}
             <button class="icon-btn" onclick="deleteWord('${w.id}')"><i class="fa-solid fa-trash-can"></i></button>
           </div>
         </div>
       `).join('');
     }
 
+    // 音声読み上げ
     function speakText(text) {
       const uttr = new SpeechSynthesisUtterance(text);
       uttr.lang = 'en-US';
       window.speechSynthesis.speak(uttr);
     }
 
-    function updateCard() {
-      if (words.length === 0) return;
-      const card = words[currentCardIndex % words.length];
-      document.getElementById('card-term').innerText = card.term;
-      document.getElementById('card-meaning').innerText = card.meaning;
-      document.getElementById('flashcard').classList.remove('flipped');
+    // クイズモード処理
+    function startQuiz() {
+      const dataset = getActiveDataset();
+      if (dataset.length === 0) {
+        document.getElementById('quiz-question-text').innerText = "データがありません";
+        return;
+      }
+
+      isQuizAnswered = false;
+      const current = dataset[currentQuizIndex % dataset.length];
+      
+      document.getElementById('quiz-mode-label').innerText = currentSubject === 'english' ? '意味を日本語で入力' : '読み（ひらがな）を入力';
+      document.getElementById('quiz-question-text').innerText = current.term;
+      document.getElementById('quiz-answer-input').value = '';
+      document.getElementById('quiz-answer-input').disabled = false;
+      document.getElementById('quiz-feedback').innerText = '';
+      document.getElementById('quiz-feedback').className = 'quiz-feedback';
+      document.getElementById('quiz-submit-btn').innerText = '判定する';
     }
 
-    function flipCard() {
-      document.getElementById('flashcard').classList.toggle('flipped');
+    function checkQuizAnswer() {
+      const dataset = getActiveDataset();
+      if (dataset.length === 0) return;
+
+      if (isQuizAnswered) {
+        // 次の問題へ
+        currentQuizIndex = (currentQuizIndex + 1) % dataset.length;
+        startQuiz();
+        return;
+      }
+
+      const inputVal = document.getElementById('quiz-answer-input').value.trim().toLowerCase();
+      const current = dataset[currentQuizIndex % dataset.length];
+      const correctVal = current.meaning.trim().toLowerCase();
+
+      const feedbackEl = document.getElementById('quiz-feedback');
+
+      // 部分一致または完全一致の判定
+      if (inputVal && (inputVal === correctVal || correctVal.includes(inputVal))) {
+        feedbackEl.innerText = `⭕ 正解！ （正解: ${current.meaning}）`;
+        feedbackEl.className = 'quiz-feedback correct';
+      } else {
+        feedbackEl.innerText = `❌ 不正解... （正解: ${current.meaning}）`;
+        feedbackEl.className = 'quiz-feedback incorrect';
+      }
+
+      isQuizAnswered = true;
+      document.getElementById('quiz-answer-input').disabled = true;
+      document.getElementById('quiz-submit-btn').innerText = '次の問題へ';
     }
 
-    function nextCard() {
-      if (words.length === 0) return;
-      currentCardIndex = (currentCardIndex + 1) % words.length;
-      updateCard();
-    }
-
-    function prevCard() {
-      if (words.length === 0) return;
-      currentCardIndex = (currentCardIndex - 1 + words.length) % words.length;
-      updateCard();
-    }
-
+    // モーダル
     function openModal() { document.getElementById('add-modal').classList.add('active'); }
     function closeModal() { document.getElementById('add-modal').classList.remove('active'); }
 
@@ -543,31 +622,26 @@
       if (!term || !meaning) return alert("両方入力してください");
 
       const newWord = { id: Date.now().toString(), term, meaning };
-      words.push(newWord);
-      localStorage.setItem('smart_vocab_words', JSON.stringify(words));
       
+      if (currentSubject === 'english') {
+        englishWords.push(newWord);
+        localStorage.setItem('smart_vocab_english', JSON.stringify(englishWords));
+      } else {
+        japaneseWords.push(newWord);
+        localStorage.setItem('smart_vocab_japanese', JSON.stringify(japaneseWords));
+      }
+
       document.getElementById('input-term').value = '';
       document.getElementById('input-meaning').value = '';
       closeModal();
       renderWordList();
-      updateCard();
     }
 
     function deleteWord(id) {
       if (!confirm("削除しますか？")) return;
-      words = words.filter(w => w.id !== id);
-      localStorage.setItem('smart_vocab_words', JSON.stringify(words));
-      renderWordList();
-      updateCard();
-    }
-
-    function handleAuth() {
-      alert("Firebaseの設定情報を貼り付けるとGoogleログイン機能が有効化されます！");
-    }
-
-    // 初期実行
-    renderWordList();
-    updateCard();
-  </script>
-</body>
-</html>
+      if (currentSubject === 'english') {
+        englishWords = englishWords.filter(w => w.id !== id);
+        localStorage.setItem('smart_vocab_english', JSON.stringify(englishWords));
+      } else {
+        japaneseWords = japaneseWords.filter(w => w.id !== id);
+        localStorage.setItem('smart_vocab_japanese', JSON.stringify(japanese
