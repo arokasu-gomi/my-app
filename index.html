@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -30,9 +31,8 @@
       --text-main: #1C1C1E;
       --text-sub: #8E8E93;
       --border-color: rgba(60, 60, 67, 0.12);
-      --tab-bar-bg: rgba(255, 255, 255, 0.78);
+      --tab-bar-bg: rgba(255, 255, 255, 0.85);
       
-      /* 英語: Plus Jakarta Sans / Google Sans, 日本語: ヒラギノ角ゴ */
       --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 
                      'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', 
                      'Hiragino Sans', 'メイリオ', sans-serif;
@@ -50,19 +50,18 @@
       background-color: var(--bg-color);
       color: var(--text-main);
       min-height: 100vh;
-      padding-bottom: 95px; /* ボトムバーのスペース */
+      padding-bottom: 100px;
       overflow-x: hidden;
       letter-spacing: -0.01em;
     }
 
-    /* 英単語など英語テキスト専用の最適化 */
     .en-text {
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-weight: 600;
     }
 
     /* ==========================================
-       2. ヘッダー (Apple Header Style)
+       2. ヘッダー
        ========================================== */
     header {
       position: sticky;
@@ -79,7 +78,7 @@
     }
 
     .app-title {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       background: var(--primary-gradient);
       -webkit-background-clip: text;
@@ -87,12 +86,6 @@
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 10px;
     }
 
     .login-btn {
@@ -108,24 +101,17 @@
       align-items: center;
       gap: 6px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      transition: all 0.2s ease;
-    }
-
-    .login-btn:active {
-      transform: scale(0.96);
-      opacity: 0.8;
     }
 
     .user-avatar {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid var(--primary-color);
     }
 
     /* ==========================================
-       3. メインコンテンツエリア
+       3. メインコンテンツ & タブ切替
        ========================================== */
     main {
       max-width: 600px;
@@ -135,15 +121,15 @@
 
     .view-section {
       display: none;
-      animation: fadeIn 0.25s ease-out forwards;
     }
 
     .view-section.active {
       display: block;
+      animation: fadeIn 0.2s ease-out;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -152,41 +138,36 @@
     }
 
     .section-title {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 700;
-      color: var(--text-main);
     }
 
     .section-subtitle {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-sub);
       margin-top: 4px;
     }
 
-    /* ==========================================
-       4. 教科選択メニュー (Subject Selector)
-       ========================================== */
+    /* 教科選択 */
     .subject-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      gap: 14px;
       margin-top: 15px;
     }
 
     .subject-card {
       background: var(--card-bg);
       border-radius: 20px;
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 140px;
+      height: 130px;
       position: relative;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
       border: 1px solid var(--border-color);
       cursor: pointer;
-      transition: all 0.25s ease;
-      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
     }
 
     .subject-card:active {
@@ -197,61 +178,36 @@
       background: var(--primary-gradient);
       color: #FFFFFF;
       border: none;
-      box-shadow: 0 8px 24px rgba(0, 122, 255, 0.25);
+      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.25);
     }
 
     .subject-card.disabled {
-      opacity: 0.55;
+      opacity: 0.5;
       cursor: not-allowed;
-      background: #F8F8FA;
+      background: #EFEFF4;
     }
 
     .subject-icon {
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-
-    .subject-info h3 {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 28px;
     }
 
     .subject-badge {
       position: absolute;
       top: 12px;
       right: 12px;
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 12px;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 10px;
       font-weight: 600;
     }
 
-    .badge-available {
-      background: rgba(52, 199, 89, 0.15);
-      color: #34C759;
-    }
+    .badge-available { background: rgba(52, 199, 89, 0.2); color: #248A3D; }
+    .active-subject .badge-available { background: rgba(255, 255, 255, 0.25); color: #FFF; }
+    .badge-locked { background: rgba(142, 142, 147, 0.2); color: var(--text-sub); }
 
-    .active-subject .badge-available {
-      background: rgba(255, 255, 255, 0.25);
-      color: #FFFFFF;
-    }
-
-    .badge-locked {
-      background: rgba(142, 142, 147, 0.15);
-      color: var(--text-sub);
-    }
-
-    /* ==========================================
-       5. 単語帳 & カードデザイン
-       ========================================== */
-    .action-bar {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
+    /* 単語帳リスト */
     .add-btn {
-      flex: 1;
+      width: 100%;
       background: var(--primary-gradient);
       color: white;
       border: none;
@@ -259,209 +215,110 @@
       border-radius: 16px;
       font-size: 15px;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      margin-bottom: 16px;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.25);
-      transition: all 0.2s;
-    }
-
-    .add-btn:active {
-      transform: scale(0.98);
+      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.2);
     }
 
     .word-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .word-item {
       background: var(--card-bg);
       border-radius: 16px;
-      padding: 16px 20px;
+      padding: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
       border: 1px solid var(--border-color);
     }
 
-    .word-main {
-      font-size: 19px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .word-sub {
-      font-size: 14px;
-      color: var(--text-sub);
-      margin-top: 3px;
-    }
-
-    .word-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .word-main { font-size: 18px; font-weight: 700; }
+    .word-sub { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
 
     .icon-btn {
       background: none;
       border: none;
       color: var(--text-sub);
       font-size: 16px;
-      cursor: pointer;
       padding: 8px;
-      border-radius: 50%;
-      transition: color 0.2s;
+      cursor: pointer;
     }
 
-    .icon-btn:hover {
-      color: #FF3B30; /* Apple Red */
-    }
-
-    /* 暗記カードモード */
-    .flashcard-container {
-      perspective: 1000px;
-      margin: 20px 0;
-    }
-
+    /* 暗記カード */
     .flashcard {
       width: 100%;
-      height: 280px;
+      height: 240px;
       background: var(--card-bg);
       border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
       border: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 30px;
+      padding: 20px;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      position: relative;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+      margin: 15px 0;
     }
 
-    .flashcard-term {
-      font-size: 36px;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 12px;
-    }
+    .flashcard-term { font-size: 32px; font-weight: 700; }
+    .flashcard-meaning { font-size: 22px; color: var(--primary-color); font-weight: 600; display: none; margin-top: 10px; }
+    .flashcard.flipped .flashcard-meaning { display: block; }
+    .flashcard-hint { margin-top: 20px; font-size: 11px; color: var(--text-sub); }
 
-    .flashcard-meaning {
-      font-size: 22px;
-      color: var(--primary-color);
-      font-weight: 600;
-      display: none;
-    }
-
-    .flashcard.flipped .flashcard-meaning {
-      display: block;
-    }
-
-    .flashcard-hint {
-      position: absolute;
-      bottom: 20px;
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    .card-controls {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 20px;
-    }
-
+    .card-controls { display: flex; gap: 12px; }
     .control-btn {
-      padding: 12px 24px;
-      border-radius: 20px;
+      flex: 1;
+      padding: 12px;
+      border-radius: 16px;
       border: none;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-
     .btn-prev { background: #E5E5EA; color: var(--text-main); }
     .btn-next { background: var(--primary-gradient); color: white; }
 
-    /* モーダル (単語追加) */
+    /* モーダル */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(5px);
       display: none;
       justify-content: center;
       align-items: flex-end;
       z-index: 2000;
     }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
+    .modal-overlay.active { display: flex; }
     .modal-content {
       background: var(--card-bg);
       width: 100%;
       max-width: 600px;
-      border-radius: 28px 28px 0 0;
+      border-radius: 24px 24px 0 0;
       padding: 24px;
-      animation: slideUp 0.3s ease-out;
     }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-sub);
-      margin-bottom: 6px;
-    }
-
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 4px; font-weight: 600; }
     .form-group input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      font-size: 16px;
-      font-family: var(--font-family);
-      background: #F8F8FA;
-      outline: none;
+      width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);
+      font-size: 15px; outline: none; background: #F8F8FA;
     }
 
-    .form-group input:focus {
-      border-color: var(--primary-color);
-      background: #FFFFFF;
-    }
-
-    /* ==========================================
-       6. Apple アプリ風ボトムナビゲーション (iOS Tab Bar)
-       ========================================== */
+    /* Apple ボトムナビゲーション */
     .apple-tab-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 83px;
-      padding-bottom: 20px; /* iPhone Home Indicator safe area */
+      bottom: 0; left: 0; right: 0;
+      height: 75px;
+      padding-bottom: 15px;
       background: var(--tab-bar-bg);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-top: 0.5px solid var(--border-color);
       display: flex;
       justify-content: space-around;
@@ -473,35 +330,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       color: var(--text-sub);
-      text-decoration: none;
       font-size: 10px;
       font-weight: 500;
-      gap: 4px;
+      gap: 3px;
       cursor: pointer;
-      width: 25%;
-      transition: color 0.2s ease;
+      width: 33%;
     }
 
-    .tab-item i {
-      font-size: 22px;
-      transition: transform 0.2s ease;
-    }
-
-    .tab-item.active {
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-
-    .tab-item.active i {
-      transform: translateY(-2px);
-    }
+    .tab-item i { font-size: 20px; }
+    .tab-item.active { color: var(--primary-color); font-weight: 600; }
   </style>
 </head>
 <body>
 
-  <!-- ヘッダー -->
   <header>
     <div class="app-title">
       <i class="fa-solid fa-graduation-cap"></i>
@@ -515,237 +357,217 @@
     </div>
   </header>
 
-  <!-- メインコンテンツ -->
   <main>
-
-    <!-- 1. 教科選択画面 -->
+    <!-- 教科選択 -->
     <section id="view-subjects" class="view-section active">
       <div class="section-header">
         <h1 class="section-title">教科を選択</h1>
-        <p class="section-subtitle">学習したい教科をタップしてください</p>
+        <p class="section-subtitle">学習する教科を選んでください</p>
       </div>
-
       <div class="subject-grid">
-        <!-- 英語 (アクティブ) -->
         <div class="subject-card active-subject" onclick="selectSubject('english')">
           <span class="subject-badge badge-available">利用可能</span>
           <div class="subject-icon"><i class="fa-solid fa-language"></i></div>
-          <div class="subject-info">
+          <div>
             <h3 class="en-text">English</h3>
-            <p style="font-size: 12px; opacity: 0.9;">英単語・暗記帳</p>
+            <p style="font-size: 11px; opacity: 0.8;">英単語帳</p>
           </div>
         </div>
-
-        <!-- 数学 (準備中) -->
         <div class="subject-card disabled">
           <span class="subject-badge badge-locked">準備中</span>
           <div class="subject-icon"><i class="fa-solid fa-calculator"></i></div>
-          <div class="subject-info">
-            <h3>数学</h3>
-            <p style="font-size: 12px; color: var(--text-sub);">公式・定理</p>
-          </div>
+          <div><h3>数学</h3><p style="font-size: 11px; color: var(--text-sub);">公式・定理</p></div>
         </div>
-
-        <!-- 理科 (準備中) -->
         <div class="subject-card disabled">
           <span class="subject-badge badge-locked">準備中</span>
           <div class="subject-icon"><i class="fa-solid fa-flask"></i></div>
-          <div class="subject-info">
-            <h3>理科</h3>
-            <p style="font-size: 12px; color: var(--text-sub);">用語・実験</p>
-          </div>
+          <div><h3>理科</h3><p style="font-size: 11px; color: var(--text-sub);">用語・計算</p></div>
         </div>
-
-        <!-- 社会 (準備中) -->
         <div class="subject-card disabled">
           <span class="subject-badge badge-locked">準備中</span>
           <div class="subject-icon"><i class="fa-solid fa-earth-americas"></i></div>
-          <div class="subject-info">
-            <h3>社会</h3>
-            <p style="font-size: 12px; color: var(--text-sub);">歴史・地理</p>
-          </div>
-        </div>
-
-        <!-- 国語 (準備中) -->
-        <div class="subject-card disabled">
-          <span class="subject-badge badge-locked">準備中</span>
-          <div class="subject-icon"><i class="fa-solid fa-book-open"></i></div>
-          <div class="subject-info">
-            <h3>国語</h3>
-            <p style="font-size: 12px; color: var(--text-sub);">古文・漢文</p>
-          </div>
+          <div><h3>社会</h3><p style="font-size: 11px; color: var(--text-sub);">歴史・地理</p></div>
         </div>
       </div>
     </section>
 
-    <!-- 2. 単語帳一覧画面 -->
+    <!-- 単語帳一覧 -->
     <section id="view-words" class="view-section">
       <div class="section-header">
         <h1 class="section-title en-text">English Vocab</h1>
-        <p class="section-subtitle">登録された単語の一覧です</p>
+        <p class="section-subtitle">登録中の英単語</p>
       </div>
-
-      <div class="action-bar">
-        <button class="add-btn" onclick="openModal()">
-          <i class="fa-solid fa-plus"></i>
-          <span>新しい単語を追加</span>
-        </button>
-      </div>
-
-      <div class="word-list" id="word-list-container">
-        <!-- JSで動的に追加されます -->
-      </div>
+      <button class="add-btn" onclick="openModal()"><i class="fa-solid fa-plus"></i> 新しい単語を追加</button>
+      <div class="word-list" id="word-list-container"></div>
     </section>
 
-    <!-- 3. 暗記カード画面 -->
+    <!-- 暗記カード -->
     <section id="view-card" class="view-section">
       <div class="section-header">
         <h1 class="section-title">暗記カード</h1>
         <p class="section-subtitle">タップで裏返します</p>
       </div>
-
-      <div class="flashcard-container">
-        <div class="flashcard" id="flashcard" onclick="flipCard()">
-          <div class="flashcard-term en-text" id="card-term">Apple</div>
-          <div class="flashcard-meaning" id="card-meaning">りんご</div>
-          <div class="flashcard-hint"><i class="fa-solid fa-hand-pointer"></i> タップして和訳を表示</div>
-        </div>
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="flashcard-term en-text" id="card-term">Apple</div>
+        <div class="flashcard-meaning" id="card-meaning">りんご</div>
+        <div class="flashcard-hint"><i class="fa-solid fa-hand-pointer"></i> タップで答えを表示</div>
       </div>
-
       <div class="card-controls">
         <button class="control-btn btn-prev" onclick="prevCard()"><i class="fa-solid fa-arrow-left"></i> 前へ</button>
         <button class="control-btn btn-next" onclick="nextCard()">次へ <i class="fa-solid fa-arrow-right"></i></button>
       </div>
     </section>
-
   </main>
 
-  <!-- 単語追加モーダル -->
+  <!-- 追加モーダル -->
   <div class="modal-overlay" id="add-modal">
     <div class="modal-content">
-      <h2 style="font-size: 20px; margin-bottom: 16px;">単語の追加</h2>
+      <h3 style="margin-bottom: 14px;">新しい単語を追加</h3>
       <div class="form-group">
         <label>英単語 (English)</label>
         <input type="text" id="input-term" class="en-text" placeholder="例: persistent">
       </div>
       <div class="form-group">
         <label>日本語訳 (Japanese)</label>
-        <input type="text" id="input-meaning" placeholder="例: 粘り強い、持続する">
+        <input type="text" id="input-meaning" placeholder="例: 粘り強い">
       </div>
-      <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button class="control-btn btn-prev" style="flex:1;" onclick="closeModal()">キャンセル</button>
-        <button class="control-btn btn-next" style="flex:1;" onclick="saveWord()">保存</button>
+      <div style="display: flex; gap: 10px; margin-top: 16px;">
+        <button class="control-btn btn-prev" onclick="closeModal()">キャンセル</button>
+        <button class="control-btn btn-next" onclick="saveWord()">保存</button>
       </div>
     </div>
   </div>
 
-  <!-- Apple風ボトムナビゲーション (Tab Bar) -->
+  <!-- Apple風 ボトムナビ -->
   <nav class="apple-tab-bar">
-    <div class="tab-item active" onclick="switchTab('subjects', this)">
+    <div class="tab-item active" id="tab-subjects" onclick="switchTab('subjects')">
       <i class="fa-solid fa-shapes"></i>
       <span>教科</span>
     </div>
-    <div class="tab-item" onclick="switchTab('words', this)">
+    <div class="tab-item" id="tab-words" onclick="switchTab('words')">
       <i class="fa-solid fa-list-ul"></i>
       <span>単語帳</span>
     </div>
-    <div class="tab-item" onclick="switchTab('card', this)">
+    <div class="tab-item" id="tab-card" onclick="switchTab('card')">
       <i class="fa-solid fa-clone"></i>
       <span>暗記カード</span>
     </div>
   </nav>
 
-  <!-- JavaScript ロジック -->
   <script>
-    // ==========================================
-    // 1. Firebase 設定
-    // ==========================================
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // Firebase 初期化
-    let db = null;
-    let auth = null;
-    let currentUser = null;
-
-    try {
-      if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
-        firebase.initializeApp(firebaseConfig);
-        auth = firebase.auth();
-        db = firebase.firestore();
-
-        // ログイン状態の監視
-        auth.onAuthStateChanged(user => {
-          currentUser = user;
-          updateAuthUI();
-          loadWords();
-        });
-      }
-    } catch (e) {
-      console.log("Firebase initialized in offline mode");
-    }
-
-    // デフォルトのサンプル単語データ
+    // 初期サンプルデータ
     let words = JSON.parse(localStorage.getItem('smart_vocab_words')) || [
       { id: '1', term: 'Apple', meaning: 'りんご' },
       { id: '2', term: 'Book', meaning: '本' },
       { id: '3', term: 'Challenge', meaning: '挑戦する' }
     ];
-
     let currentCardIndex = 0;
 
-    // ==========================================
-    // 2. 認証処理 (Google Login)
-    // ==========================================
-    function handleAuth() {
-      if (!auth) {
-        alert("Firebaseの設定が完了していません。設定後にGoogleログインが可能になります。");
+    // タブ切り替え（必ず動くように独立化）
+    function switchTab(viewName) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+      
+      const targetView = document.getElementById(`view-${viewName}`);
+      const targetTab = document.getElementById(`tab-${viewName}`);
+      
+      if (targetView) targetView.classList.add('active');
+      if (targetTab) targetTab.classList.add('active');
+    }
+
+    function selectSubject(subject) {
+      if (subject === 'english') {
+        switchTab('words');
+      }
+    }
+
+    // レンダリング
+    function renderWordList() {
+      const container = document.getElementById('word-list-container');
+      if (!container) return;
+      if (words.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:var(--text-sub); margin-top:30px;">単語がありません</p>`;
         return;
       }
 
-      if (currentUser) {
-        auth.signOut().then(() => {
-          alert("ログアウトしました");
-        });
-      } else {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).catch(err => {
-          alert("ログインエラー: " + err.message);
-        });
-      }
+      container.innerHTML = words.map(w => `
+        <div class="word-item">
+          <div>
+            <div class="word-main en-text">${w.term}</div>
+            <div class="word-sub">${w.meaning}</div>
+          </div>
+          <div>
+            <button class="icon-btn" onclick="speakText('${w.term}')"><i class="fa-solid fa-volume-high"></i></button>
+            <button class="icon-btn" onclick="deleteWord('${w.id}')"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        </div>
+      `).join('');
     }
 
-    function updateAuthUI() {
-      const btn = document.getElementById('auth-btn');
-      if (currentUser) {
-        btn.innerHTML = `<img src="${currentUser.photoURL}" class="user-avatar"> <span>${currentUser.displayName.split(' ')[0]}</span>`;
-      } else {
-        btn.innerHTML = `<i class="fa-brands fa-google"></i> <span>ログイン</span>`;
-      }
+    function speakText(text) {
+      const uttr = new SpeechSynthesisUtterance(text);
+      uttr.lang = 'en-US';
+      window.speechSynthesis.speak(uttr);
     }
 
-    // ==========================================
-    // 3. データ読み込み・保存
-    // ==========================================
-    function loadWords() {
-      if (currentUser && db) {
-        db.collection('users').doc(currentUser.uid).collection('words')
-          .onSnapshot(snapshot => {
-            words = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderWordList();
-            updateCard();
-          });
-      } else {
-        renderWordList();
-        updateCard();
-      }
+    function updateCard() {
+      if (words.length === 0) return;
+      const card = words[currentCardIndex % words.length];
+      document.getElementById('card-term').innerText = card.term;
+      document.getElementById('card-meaning').innerText = card.meaning;
+      document.getElementById('flashcard').classList.remove('flipped');
     }
+
+    function flipCard() {
+      document.getElementById('flashcard').classList.toggle('flipped');
+    }
+
+    function nextCard() {
+      if (words.length === 0) return;
+      currentCardIndex = (currentCardIndex + 1) % words.length;
+      updateCard();
+    }
+
+    function prevCard() {
+      if (words.length === 0) return;
+      currentCardIndex = (currentCardIndex - 1 + words.length) % words.length;
+      updateCard();
+    }
+
+    function openModal() { document.getElementById('add-modal').classList.add('active'); }
+    function closeModal() { document.getElementById('add-modal').classList.remove('active'); }
 
     function saveWord() {
-      const term 
+      const term = document.getElementById('input-term').value.trim();
+      const meaning = document.getElementById('input-meaning').value.trim();
+      if (!term || !meaning) return alert("両方入力してください");
+
+      const newWord = { id: Date.now().toString(), term, meaning };
+      words.push(newWord);
+      localStorage.setItem('smart_vocab_words', JSON.stringify(words));
+      
+      document.getElementById('input-term').value = '';
+      document.getElementById('input-meaning').value = '';
+      closeModal();
+      renderWordList();
+      updateCard();
+    }
+
+    function deleteWord(id) {
+      if (!confirm("削除しますか？")) return;
+      words = words.filter(w => w.id !== id);
+      localStorage.setItem('smart_vocab_words', JSON.stringify(words));
+      renderWordList();
+      updateCard();
+    }
+
+    function handleAuth() {
+      alert("Firebaseの設定情報を貼り付けるとGoogleログイン機能が有効化されます！");
+    }
+
+    // 初期実行
+    renderWordList();
+    updateCard();
+  </script>
+</body>
+</html>
