@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Smart Vocab</title>
+  <title>Smart Vocab & Timer</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,10 +13,14 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+  <!-- Chart.js (グラフ描写用) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     :root {
       --primary-color: #007AFF;
       --primary-gradient: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+      --break-gradient: linear-gradient(135deg, #34C759 0%, #30B0C7 100%);
       --success-color: #34C759;
       --error-color: #FF3B30;
       --bg-color: #F2F2F7;
@@ -112,6 +116,7 @@
       margin-top: 4px;
     }
 
+    /* 教科選択 */
     .subject-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -131,10 +136,6 @@
       border: 1px solid var(--border-color);
       cursor: pointer;
       box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    }
-
-    .subject-card:active {
-      transform: scale(0.97);
     }
 
     .subject-card.active-subject {
@@ -208,7 +209,8 @@
       cursor: pointer;
     }
 
-    .quiz-card {
+    /* クイズ & タイマーカード */
+    .custom-card {
       background: var(--card-bg);
       border-radius: 24px;
       border: 1px solid var(--border-color);
@@ -224,13 +226,6 @@
       margin: 20px 0 10px 0;
     }
 
-    .quiz-input-group {
-      margin: 20px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
     .quiz-input {
       width: 100%;
       padding: 14px;
@@ -241,11 +236,7 @@
       outline: none;
       font-family: var(--font-family);
       background: #F8F8FA;
-    }
-
-    .quiz-input:focus {
-      border-color: var(--primary-color);
-      background: #FFF;
+      margin-bottom: 12px;
     }
 
     .quiz-feedback {
@@ -270,6 +261,73 @@
 
     .btn-next { background: var(--primary-gradient); color: white; }
 
+    /* タイマー専用スタイル */
+    .timer-display {
+      font-size: 54px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin: 15px 0;
+      font-family: 'Plus Jakarta Sans', monospace;
+    }
+
+    .timer-status-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+      color: white;
+      background: var(--primary-gradient);
+    }
+
+    .timer-status-badge.break {
+      background: var(--break-gradient);
+    }
+
+    .time-setter {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #F8F8FA;
+      padding: 12px;
+      border-radius: 16px;
+    }
+
+    .setter-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .setter-group label {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .setter-group input {
+      width: 70px;
+      padding: 8px;
+      text-align: center;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .timer-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      background: #E5E5EA;
+      color: var(--text-main);
+    }
+
+    /* ボトムナビ */
     .apple-tab-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -294,12 +352,13 @@
       font-weight: 500;
       gap: 3px;
       cursor: pointer;
-      width: 33%;
+      width: 25%;
     }
 
     .tab-item i { font-size: 20px; }
     .tab-item.active { color: var(--primary-color); font-weight: 600; }
 
+    /* モーダル */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -335,7 +394,7 @@
   </header>
 
   <main>
-    <!-- 教科選択 -->
+    <!-- 1. 教科選択 -->
     <section id="view-subjects" class="view-section active">
       <div class="section-header">
         <h1 class="section-title">教科を選択</h1>
@@ -374,7 +433,7 @@
       </div>
     </section>
 
-    <!-- 単語帳一覧 -->
+    <!-- 2. 単語帳一覧 -->
     <section id="view-words" class="view-section">
       <div class="section-header">
         <h1 class="section-title" id="words-title">English Vocab</h1>
@@ -384,25 +443,59 @@
       <div class="word-list" id="word-list-container"></div>
     </section>
 
-    <!-- クイズモード -->
+    <!-- 3. クイズモード -->
     <section id="view-quiz" class="view-section">
       <div class="section-header">
         <h1 class="section-title">単語入力クイズ</h1>
         <p class="section-subtitle">意味または読みを入力して判定ボタンを押してください</p>
       </div>
       
-      <div class="quiz-card">
+      <div class="custom-card">
         <div style="font-size: 12px; color: var(--text-sub); font-weight: 600;" id="quiz-mode-label">問題</div>
         <div class="quiz-question" id="quiz-question-text">Apple</div>
         
-        <div class="quiz-input-group">
-          <input type="text" id="quiz-answer-input" class="quiz-input" placeholder="回答を入力..." autocomplete="off">
-          <button class="control-btn btn-next" id="quiz-submit-btn" onclick="checkQuizAnswer()">判定する</button>
-        </div>
+        <input type="text" id="quiz-answer-input" class="quiz-input" placeholder="回答を入力..." autocomplete="off">
+        <button class="control-btn btn-next" id="quiz-submit-btn" onclick="checkQuizAnswer()">判定する</button>
 
         <div class="quiz-feedback" id="quiz-feedback"></div>
       </div>
     </section>
+
+    <!-- 4. 学習時間 & ポモドーロタイマー -->
+    <section id="view-timer" class="view-section">
+      <div class="section-header">
+        <h1 class="section-title">学習タイマー</h1>
+        <p class="section-subtitle">集中時間と休憩時間をセットして効率UP</p>
+      </div>
+
+      <div class="custom-card">
+        <div class="timer-status-badge" id="timer-status-badge">集中タイム</div>
+        <div class="timer-display" id="timer-display">25:00</div>
+
+        <div class="time-setter">
+          <div class="setter-group">
+            <label>勉強時間 (分)</label>
+            <input type="number" id="study-min-input" value="25" min="1" max="120" onchange="resetTimer()">
+          </div>
+          <div class="setter-group">
+            <label>休憩時間 (分)</label>
+            <input type="number" id="break-min-input" value="5" min="1" max="60" onchange="resetTimer()">
+          </div>
+        </div>
+
+        <div class="timer-btn-group">
+          <button class="control-btn btn-next" id="timer-start-btn" onclick="toggleTimer()">スタート</button>
+          <button class="control-btn btn-secondary" onclick="resetTimer()">リセット</button>
+        </div>
+      </div>
+
+      <!-- 週間グラフ -->
+      <div class="custom-card" style="margin-top: 20px;">
+        <h3 style="font-size: 16px; text-align: left; margin-bottom: 12px;">今週の勉強時間 (分)</h3>
+        <canvas id="weeklyChart" height="180"></canvas>
+      </div>
+    </section>
+
   </main>
 
   <!-- 追加モーダル -->
@@ -418,7 +511,7 @@
         <input type="text" id="input-meaning">
       </div>
       <div style="display: flex; gap: 10px; margin-top: 16px;">
-        <button class="control-btn" style="background:#E5E5EA;" onclick="closeModal()">キャンセル</button>
+        <button class="control-btn btn-secondary" onclick="closeModal()">キャンセル</button>
         <button class="control-btn btn-next" onclick="saveWord()">保存</button>
       </div>
     </div>
@@ -438,9 +531,14 @@
       <i class="fa-solid fa-pen-to-square"></i>
       <span>クイズ</span>
     </div>
+    <div class="tab-item" id="tab-timer" onclick="switchTab('timer')">
+      <i class="fa-solid fa-clock"></i>
+      <span>タイマー</span>
+    </div>
   </nav>
 
   <script>
+    // --- グローバル変数 ---
     let currentSubject = 'english';
 
     let englishWords = JSON.parse(localStorage.getItem('smart_vocab_english')) || [
@@ -455,18 +553,23 @@
       { id: 'j3', term: '熨斗', meaning: 'のし' },
       { id: 'j4', term: '躊躇', meaning: 'ちゅうちょ' },
       { id: 'j5', term: '相殺', meaning: 'そうさい' },
-      { id: 'j6', term: '脆弱', meaning: 'ぜいじゃく' },
-      { id: 'j7', term: '頒布', meaning: 'はんぷ' },
-      { id: 'j8', term: '忖度', meaning: 'そんたく' }
+      { id: 'j6', term: '脆弱', meaning: 'ぜいじゃく' }
     ];
 
     let currentQuizIndex = 0;
     let isQuizAnswered = false;
 
-    function getActiveDataset() {
-      return currentSubject === 'english' ? englishWords : japaneseWords;
-    }
+    // タイマー関連
+    let timerInterval = null;
+    let isTimerRunning = false;
+    let isStudyMode = true; // true: 勉強, false: 休憩
+    let timeLeft = 25 * 60; // 秒
 
+    // 週間学習データ [月, 火, 水, 木, 金, 土, 日]
+    let weeklyStudyData = JSON.parse(localStorage.getItem('smart_vocab_weekly')) || [30, 45, 25, 50, 20, 60, 15];
+    let chartInstance = null;
+
+    // --- タブ＆教科切り替え ---
     function switchTab(viewName) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
@@ -479,31 +582,24 @@
 
       if (viewName === 'words') renderWordList();
       if (viewName === 'quiz') startQuiz();
+      if (viewName === 'timer') initChart();
     }
 
     function selectSubject(subject) {
       currentSubject = subject;
-
-      document.querySelectorAll('.subject-card').forEach(el => {
-        el.classList.remove('active-subject');
-        const badge = el.querySelector('.subject-badge');
-        if (badge && !el.classList.contains('disabled')) {
-          badge.textContent = '利用可能';
-          badge.className = 'subject-badge badge-available';
-        }
-      });
-
+      document.querySelectorAll('.subject-card').forEach(el => el.classList.remove('active-subject'));
       const selectedEl = document.getElementById(`subject-card-${subject}`);
-      if (selectedEl) {
-        selectedEl.classList.add('active-subject');
-        const badge = selectedEl.querySelector('.subject-badge');
-        if (badge) badge.textContent = '選択中';
-      }
+      if (selectedEl) selectedEl.classList.add('active-subject');
 
       document.getElementById('words-title').innerText = subject === 'english' ? 'English Vocab' : '国語 (漢検2級漢字)';
       switchTab('words');
     }
 
+    function getActiveDataset() {
+      return currentSubject === 'english' ? englishWords : japaneseWords;
+    }
+
+    // --- 単語帳 ---
     function renderWordList() {
       const container = document.getElementById('word-list-container');
       const dataset = getActiveDataset();
@@ -534,54 +630,6 @@
       window.speechSynthesis.speak(uttr);
     }
 
-    function startQuiz() {
-      const dataset = getActiveDataset();
-      if (dataset.length === 0) {
-        document.getElementById('quiz-question-text').innerText = "データがありません";
-        return;
-      }
-
-      isQuizAnswered = false;
-      const current = dataset[currentQuizIndex % dataset.length];
-      
-      document.getElementById('quiz-mode-label').innerText = currentSubject === 'english' ? '意味を日本語で入力' : '読み（ひらがな）を入力';
-      document.getElementById('quiz-question-text').innerText = current.term;
-      document.getElementById('quiz-answer-input').value = '';
-      document.getElementById('quiz-answer-input').disabled = false;
-      document.getElementById('quiz-feedback').innerText = '';
-      document.getElementById('quiz-feedback').className = 'quiz-feedback';
-      document.getElementById('quiz-submit-btn').innerText = '判定する';
-    }
-
-    function checkQuizAnswer() {
-      const dataset = getActiveDataset();
-      if (dataset.length === 0) return;
-
-      if (isQuizAnswered) {
-        currentQuizIndex = (currentQuizIndex + 1) % dataset.length;
-        startQuiz();
-        return;
-      }
-
-      const inputVal = document.getElementById('quiz-answer-input').value.trim().toLowerCase();
-      const current = dataset[currentQuizIndex % dataset.length];
-      const correctVal = current.meaning.trim().toLowerCase();
-
-      const feedbackEl = document.getElementById('quiz-feedback');
-
-      if (inputVal && (inputVal === correctVal || correctVal.includes(inputVal))) {
-        feedbackEl.innerText = `⭕ 正解！ （正解: ${current.meaning}）`;
-        feedbackEl.className = 'quiz-feedback correct';
-      } else {
-        feedbackEl.innerText = `❌ 不正解... （正解: ${current.meaning}）`;
-        feedbackEl.className = 'quiz-feedback incorrect';
-      }
-
-      isQuizAnswered = true;
-      document.getElementById('quiz-answer-input').disabled = true;
-      document.getElementById('quiz-submit-btn').innerText = '次の問題へ';
-    }
-
     function openModal() { document.getElementById('add-modal').classList.add('active'); }
     function closeModal() { document.getElementById('add-modal').classList.remove('active'); }
 
@@ -591,7 +639,6 @@
       if (!term || !meaning) return alert("両方入力してください");
 
       const newWord = { id: Date.now().toString(), term, meaning };
-      
       if (currentSubject === 'english') {
         englishWords.push(newWord);
         localStorage.setItem('smart_vocab_english', JSON.stringify(englishWords));
@@ -613,24 +660,4 @@
         localStorage.setItem('smart_vocab_english', JSON.stringify(englishWords));
       } else {
         japaneseWords = japaneseWords.filter(w => w.id !== id);
-        localStorage.setItem('smart_vocab_japanese', JSON.stringify(japaneseWords));
-      }
-      renderWordList();
-    }
-
-    // イベントリスナーの安全な設定
-    window.addEventListener('DOMContentLoaded', () => {
-      const quizInput = document.getElementById('quiz-answer-input');
-      if (quizInput) {
-        quizInput.addEventListener('keypress', function (e) {
-          if (e.key === 'Enter') {
-            checkQuizAnswer();
-          }
-        });
-      }
-      renderWordList();
-    });
-  </script>
-</body>
-</html>
-
+        localStorag
