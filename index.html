@@ -3,253 +3,367 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>クラウド単語帳</title>
+  <title>Smart Vocab</title>
   <style>
     :root {
-      --bg-color: #121212;
-      --card-bg: #1e1e1e;
-      --accent: #3b82f6;
-      --text: #e0e0e0;
-      --sub-text: #a0a0a0;
-      --border: #333333;
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #1c1c1e;
+      --sub-text: #8e8e93;
+      --accent: #007aff;
+      --border: #c6c6c8;
+      --tab-bg: rgba(255, 255, 255, 0.85);
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text);
       margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 600px;
+      padding: 0;
+      padding-bottom: 90px; /* ボトムバー分の余白 */
     }
 
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      margin: 0;
-    }
-
-    button {
-      background-color: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
+      padding: 16px 20px 8px 20px;
+      font-size: 1.2rem;
       font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    button:hover {
-      opacity: 0.9;
+    .container {
+      padding: 16px 20px;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: var(--sub-text);
+      font-size: 0.9rem;
       margin-bottom: 20px;
     }
 
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    input[type="text"] {
-      background: #2a2a2a;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    .word-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .word-item {
+    /* 設定リストカード (Apple風) */
+    .settings-group {
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 16px;
+      border-radius: 12px;
+      padding: 4px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .setting-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #efeff4;
     }
 
-    .word-title {
-      font-weight: bold;
-      font-size: 1.1rem;
+    .setting-item:last-child {
+      border-bottom: none;
     }
 
-    .word-meaning {
-      color: var(--sub-text);
+    .setting-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+    }
+
+    select {
+      background: #efeff4;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
       font-size: 0.9rem;
-      margin-top: 4px;
+      color: var(--text);
+      outline: none;
     }
 
-    .delete-btn {
-      background: #ef4444;
-      padding: 4px 10px;
-      font-size: 0.8rem;
+    /* 汎用カード・フォーム */
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #d1d1d6;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button.primary-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    /* ボトムタブバー (Appleスタイル すりガラス) */
+    nav.tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: var(--tab-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 0.5px solid rgba(0, 0, 0, 0.15);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .tab-item {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--sub-text);
+      font-size: 0.7rem;
+      cursor: pointer;
+      flex: 1;
+      gap: 4px;
+    }
+
+    .tab-item.active {
+      color: var(--accent);
+    }
+
+    .tab-item svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .list-item {
+      background: var(--card-bg);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #efeff4;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <h1>単語帳 WebApp</h1>
-      <button id="auth-btn">Googleでログイン</button>
-    </header>
+  <header>
+    <span>🎓</span>
+    <span id="app-title">Smart Vocab</span>
+  </header>
 
-    <!-- 単語追加フォーム -->
-    <div class="card">
-      <div class="input-group">
-        <input type="text" id="word-input" placeholder="単語 / 単語フレーズ (例: Apple)">
-        <input type="text" id="meaning-input" placeholder="意味 / 訳 (例: りんご)">
-        <button id="add-btn">追加する</button>
+  <div class="container">
+    <!-- 教科タブ -->
+    <div id="page-教科" class="page">
+      <h2>教科</h2>
+      <div class="subtitle">学習する教科を選択・管理</div>
+      <div class="card">
+        <input type="text" id="subject-input" placeholder="新しい教科名 (例: 英語)">
+        <button class="primary-btn" onclick="addSubject()">教科を追加</button>
+      </div>
+      <div id="subject-list"></div>
+    </div>
+
+    <!-- 単語帳タブ -->
+    <div id="page-単語帳" class="page active">
+      <h2>単語帳</h2>
+      <div class="subtitle">単語と意味の登録・確認</div>
+      <div class="card">
+        <input type="text" id="word-input" placeholder="単語 (例: Apple)">
+        <input type="text" id="meaning-input" placeholder="意味 (例: りんご)">
+        <button class="primary-btn" onclick="addWord()">単語を追加</button>
+      </div>
+      <div id="word-list"></div>
+    </div>
+
+    <!-- クイズタブ -->
+    <div id="page-クイズ" class="page">
+      <h2>クイズ</h2>
+      <div class="subtitle">暗記のテスト</div>
+      <div class="card" style="text-align: center; padding: 30px;">
+        <p id="quiz-question" style="font-size: 1.2rem; font-weight: bold;">「Apple」の意味は？</p>
+        <input type="text" id="quiz-answer" placeholder="答えを入力">
+        <button class="primary-btn" onclick="checkQuiz()">回答する</button>
       </div>
     </div>
 
-    <!-- 単語一覧表示 -->
-    <ul class="word-list" id="word-list">
-      <!-- JavaScriptで動的追加 -->
-    </ul>
+    <!-- タイマータブ -->
+    <div id="page-タイマー" class="page">
+      <h2>タイマー</h2>
+      <div class="subtitle">ポモドーロ・学習タイマー</div>
+      <div class="card" style="text-align: center; padding: 30px;">
+        <h1 id="timer-display" style="font-size: 3rem; margin: 10px 0;">25:00</h1>
+        <button class="primary-btn" onclick="startTimer()">スタート</button>
+      </div>
+    </div>
+
+    <!-- 設定タブ -->
+    <div id="page-設定" class="page">
+      <h2>設定</h2>
+      <div class="subtitle">アプリの表示と言語設定</div>
+      <div class="settings-group">
+        <div class="setting-item">
+          <div class="setting-label">
+            <span>🌐</span>
+            <span>言語 / Language</span>
+          </div>
+          <select id="lang-select" onchange="changeLanguage(this.value)">
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="zh-CN">简体中文</option>
+            <option value="zh-TW">繁體中文</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Firebase (v10 modular) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, onSnapshot, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  <!-- ボトムタブバー (Appleスタイル) -->
+  <nav class="tab-bar">
+    <button class="tab-item" onclick="switchTab('教科', this)">
+      <svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6L23 9l-11-6zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+      教科
+    </button>
+    <button class="tab-item active" onclick="switchTab('単語帳', this)">
+      <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0-2-.9-2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+      単語帳
+    </button>
+    <button class="tab-item" onclick="switchTab('クイズ', this)">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      クイズ
+    </button>
+    <button class="tab-item" onclick="switchTab('タイマー', this)">
+      <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+      タイマー
+    </button>
+    <button class="tab-item" onclick="switchTab('設定', this)">
+      <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      設定
+    </button>
+  </nav>
 
-    // TODO: ご自身の Firebase コンソールの設定値に置き換えてください
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+  <script>
+    // ローカルストレージを使ったデータ管理
+    let words = JSON.parse(localStorage.getItem('smart_vocab_words')) || [
+      { word: 'Apple', meaning: 'りんご' },
+      { word: 'Book', meaning: '本' }
+    ];
+    let subjects = JSON.parse(localStorage.getItem('smart_vocab_subjects')) || ['英語', '数学'];
 
-    // Firebase 初期化
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
+    function switchTab(tabName, element) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + tabName).classList.add('active');
 
-    let currentUser = null;
-
-    const authBtn = document.getElementById("auth-btn");
-    const addBtn = document.getElementById("add-btn");
-    const wordInput = document.getElementById("word-input");
-    const meaningInput = document.getElementById("meaning-input");
-    const wordList = document.getElementById("word-list");
-
-    // 認証状態の監視
-    onAuthStateChanged(auth, (user) => {
-      currentUser = user;
-      if (user) {
-        authBtn.textContent = "ログアウト";
-        loadWords(user.uid);
-      } else {
-        authBtn.textContent = "Googleでログイン";
-        wordList.innerHTML = '<li style="text-align:center; color: var(--sub-text);">ログインすると単語帳が表示されます</li>';
-      }
-    });
-
-    // ログイン / ログアウト切り替え
-    authBtn.addEventListener("click", () => {
-      if (currentUser) {
-        signOut(auth);
-      } else {
-        signInWithPopup(auth, provider).catch((err) => console.error(err));
-      }
-    });
-
-    // 単語追加処理
-    addBtn.addEventListener("click", async () => {
-      const word = wordInput.value.trim();
-      const meaning = meaningInput.value.trim();
-
-      if (!currentUser) {
-        alert("ログインが必要です");
-        return;
-      }
-      if (!word || !meaning) {
-        alert("単語と意味の両方を入力してください");
-        return;
-      }
-
-      await addDoc(collection(db, "users", currentUser.uid, "words"), {
-        word: word,
-        meaning: meaning,
-        createdAt: serverTimestamp()
-      });
-
-      wordInput.value = "";
-      meaningInput.value = "";
-    });
-
-    // リアルタイムデータの読み込み
-    function loadWords(userId) {
-      const q = query(collection(db, "users", userId, "words"));
-      
-      onSnapshot(q, (snapshot) => {
-        wordList.innerHTML = "";
-        snapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-          const li = document.createElement("li");
-          li.className = "word-item";
-          li.innerHTML = `
-            <div>
-              <div class="word-title">${escapeHTML(data.word)}</div>
-              <div class="word-meaning">${escapeHTML(data.meaning)}</div>
-            </div>
-            <button class="delete-btn" data-id="${docSnap.id}">削除</button>
-          `;
-          wordList.appendChild(li);
-        });
-
-        // 削除ボタンイベントバインド
-        document.querySelectorAll(".delete-btn").forEach((btn) => {
-          btn.addEventListener("click", async (e) => {
-            const id = e.target.getAttribute("data-id");
-            await deleteDoc(doc(db, "users", userId, "words", id));
-          });
-        });
-      });
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      element.classList.add('active');
     }
 
-    // HTMLエスケープ処理
-    function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, 
-        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-      );
+    function renderWords() {
+      const list = document.getElementById('word-list');
+      list.innerHTML = '';
+      words.forEach((item, index) => {
+        list.innerHTML += `
+          <div class="list-item">
+            <div><strong>${item.word}</strong>: ${item.meaning}</div>
+            <button onclick="deleteWord(${index})" style="background:#ff3b30; color:white; border:none; padding:4px 8px; border-radius:4px;">削除</button>
+          </div>
+        `;
+      });
+      localStorage.setItem('smart_vocab_words', JSON.stringify(words));
+    }
+
+    function addWord() {
+      const w = document.getElementById('word-input').value.trim();
+      const m = document.getElementById('meaning-input').value.trim();
+      if(w && m) {
+        words.push({ word: w, meaning: m });
+        document.getElementById('word-input').value = '';
+        document.getElementById('meaning-input').value = '';
+        renderWords();
+      }
+    }
+
+    function deleteWord(index) {
+      words.splice(index, 1);
+      renderWords();
+    }
+
+    function renderSubjects() {
+      const list = document.getElementById('subject-list');
+      list.innerHTML = '';
+      subjects.forEach((subj, index) => {
+        list.innerHTML += `
+          <div class="list-item">
+            <span>${subj}</span>
+            <button onclick="deleteSubject(${index})" style="background:#ff3b30; color:white; border:none; padding:4px 8px; border-radius:4px;">削除</button>
+          </div>
+        `;
+      });
+      localStorage.setItem('smart_vocab_subjects', JSON.stringify(subjects));
+    }
+
+    function addSubject() {
+      const s = document.getElementById('subject-input').value.trim();
+      if(s) {
+        subjects.push(s);
+        document.getElementById('subject-input').value = '';
+        renderSubjects();
+      }
+    }
+
+    function deleteSubject(index) {
+      subjects.splice(index, 1);
+      renderSubjects();
+    }
+
+    function changeLanguage(lang) {
+      localStorage.setItem('smart_vocab_lang', lang);
+      // 必要に応じた簡易テキスト切り替え
+      const titles = { ja: 'Smart Vocab', ko: '스마트 단어장', 'zh-CN': '智能单词本', 'zh-TW': '智能單字本', en: 'Smart Vocab' };
+      document.getElementById('app-title').textContent = titles[lang] || 'Smart Vocab';
+    }
+
+    // 初期描画
+    renderWords();
+    renderSubjects();
+    const savedLang = localStorage.getItem('smart_vocab_lang');
+    if(savedLang) {
+      document.getElementById('lang-select').value = savedLang;
+      changeLanguage(savedLang);
     }
   </script>
 </body>
